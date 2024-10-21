@@ -57,8 +57,10 @@ interface Props {
     <p
       class="mt-3 text-pretty text-lg leading-relaxed text-neutral-700 dark:text-neutral-400 lg:w-4/5"
     >
-      {subTitle}
+      AI-powered, error-characterized, and bias-corrected estmates of PO<sub>3</sub> along with sensitivity maps
     </p>
+    <p class="mt-3 text-pretty text-s leading-relaxed text-blue-800 dark:text-neutral-400 lg:w-4/5"> 
+    <i>Funded by NASA ACMAP-Aura Program </i></p>
   }
     <!-- Action Button Section: This section includes two CTAs with their own styles and URL -->
     <div class="mt-7 grid w-full gap-3 sm:inline-flex">
@@ -83,10 +85,10 @@ interface Props {
 	<Image
         src={src}
         alt={alt}
-        class="h-full w-full scale-110 object-cover object-center"
+        class="h-full w-full scale-100 object-cover object-center dark:bg-trueGray-400"
         draggable={"false"}
         loading={"eager"}
-        format={"avif"}
+        format={"png"}
 	 />
 	}
     </div>

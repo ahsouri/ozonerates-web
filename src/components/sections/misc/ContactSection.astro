@@ -7,13 +7,14 @@ import EmailContactInput from "@components/ui/forms/input/EmailContactInput.astr
 import PhoneInput from "@components/ui/forms/input/PhoneInput.astro";
 import TextAreaInput from "@components/ui/forms/input/TextAreaInput.astro";
 import Icon from "@components/ui/icons/Icon.astro";
+import ContactForm from "@components/ui/forms/contact_form.jsx"
 
 // Define the variables that will be used in this component
 const title: string = "Contact us";
 const subTitle: string =
-  "Have questions or want to discuss a project? Reach out, and let's craft the perfect solution with our tools and services.";
+  "Have questions or want to discuss how to use our free product?";
 const formTitle: string = "Fill in the form below";
-const formSubTitle: string = "We'll get back to you in 1-2 business days.";
+const formSubTitle: string = "We'll get back to you in 1-7 business days.";
 ---
 
 <!-- Contact Us -->
@@ -41,31 +42,9 @@ const formSubTitle: string = "We'll get back to you in 1-2 business days.";
         <!-- Each field utilizes a different input component for the specific type of input (text, email, phone, and textarea)-->
         <form>
           <div class="grid gap-4">
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <TextInput
-                id="hs-firstname-contacts"
-                label="First Name"
-                name="hs-firstname-contacts"
-              />
-              <TextInput
-                id="hs-lastname-contacts"
-                label="Last Name"
-                name="hs-firstname-contacts"
-              />
-            </div>
-            <EmailContactInput id="hs-email-contacts" />
-            <PhoneInput id="hs-phone-number" />
-            <TextAreaInput
-              id="hs-about-contacts"
-              label="Details"
-              name="hs-about-contacts"
-            />
+            
+            <ContactForm client:visible></ContactForm>
           </div>
-
-          <div class="mt-4 grid">
-            <AuthBtn title="Send Message" />
-          </div>
-
           <div class="mt-3 text-center">
             <p class="text-sm text-neutral-600 dark:text-neutral-400">
               {formSubTitle}
@@ -78,10 +57,10 @@ const formSubTitle: string = "We'll get back to you in 1-2 business days.";
       <div class="divide-y divide-neutral-300 dark:divide-neutral-700">
         <ContactIconBlock
           heading="Knowledgebase"
-          content="Browse through all of our knowledgebase articles."
+          content="Browse through all of our documanted products."
           isLinkVisible={true}
-          linkTitle="Visit guides & tutorials"
-          linkURL="#"
+          linkTitle="Visit our products with documentation"
+          linkURL="/products"
           isArrowVisible={true}
           ><Icon name="question" />
         </ContactIconBlock>
@@ -91,25 +70,17 @@ const formSubTitle: string = "We'll get back to you in 1-2 business days.";
           content="Explore our FAQ for quick, clear answers to common queries."
           isLinkVisible={true}
           linkTitle="Visit FAQ"
-          linkURL="#"
+          linkURL="/#faq"
           isArrowVisible={true}
           ><Icon name="chatBubble" />
-        </ContactIconBlock>
-
-        <ContactIconBlock
-          heading="Visit our office"
-          content="UK ScrewFast"
-          isAddressVisible={true}
-          addressContent="72 Union Terrace, E10 4PE London"
-          ><Icon name="mapPin" />
         </ContactIconBlock>
 
         <ContactIconBlock
           heading="Contact us by email"
           content="Prefer the written word? Drop us an email at"
           isLinkVisible={true}
-          linkTitle="support@screwfast.uk"
-          linkURL="#"
+          linkTitle="ozonerates@gmail.com"
+          linkURL="mailto:ozonerates@gmail.com"
           ><Icon name="envelopeOpen" />
         </ContactIconBlock>
       </div>

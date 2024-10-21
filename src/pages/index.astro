@@ -10,50 +10,35 @@ import TestimonialsSection from "@components/sections/testimonials/TestimonialsS
 import PricingSection from "@components/sections/pricing/PricingSection.astro";
 import FAQ from "@components/sections/misc/FAQ.astro";
 import AnnouncementBanner from "@components/ui/banners/AnnouncementBanner.astro";
-import heroImage from "@images/hero-image.avif";
+import heroImage from "@images/LA.png";
 import faqs from "@data/faqs.json";
 import features from "@data/features.json";
 import pricing from "@data/pricing.json";
 import featureImage from "@images/features-image.avif";
 import construction from "@images/construction-image.avif";
 import tools from "@images/automated-tools.avif";
+import tropomi_val from "@images/bias_corrected.png"
+import minds_showcase from "@images/minds_no2.png"
+import dnn from "@images/ozone_dnn.png"
+import error_char from "@images/error_char.png"
 import dashboard from "@images/dashboard-image.avif";
 
-const avatarSrcs: Array<string> = [
-  "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-  "https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-  "https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80",
-  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80",
-];
+
 ---
 
 <MainLayout>
-  <AnnouncementBanner
-    btnId="dismiss-button"
-    btnTitle="Explore ScrewFast on GitHub"
-    url="https://github.com/mearashadowfax/ScrewFast"
-  />
-
   <HeroSection
-    title=`Equip Your Projects with <span
-        class="text-yellow-500 dark:text-yellow-400">ScrewFast</span>`
-    subTitle="Top-quality hardware tools and expert construction services for every project need."
+    title=`Equip Your Research with <span
+        class="text-purple-900 dark:text-sky-200">Global Maps of PO<sub>3</sub></span>`
+    subTitle="AI-powered, error-characterized, and bias-corrected estmates of PO<sub>3</sub> along with sensitivity maps"
     primaryBtn="Start Exploring"
     primaryBtnURL="/products"
-    secondaryBtn="Contact Sales Team"
-    secondaryBtnURL="/contact"
-    withReview={true}
-    avatars={avatarSrcs}
-    rating=`<span class="font-bold">4.8</span> / 5`
-    starCount={4}
-    reviews=`From Over <span class="font-bold">12.8k</span> Reviews`
+    withReview={false}
+    rating=``
+    starCount={5}
+    reviews=`Funded by NASA ACMAP-Aura Program`
     src={heroImage}
-    alt="Stack of ScrewFast product boxes containing assorted hardware tools"
-  />
-
-  <ClientsSection
-    title="Trusted by Industry Leaders"
-    subTitle="Experience the reliability chosen by industry giants."
+    alt="LA results"
   />
 
   <FeaturesGeneral
@@ -65,81 +50,83 @@ const avatarSrcs: Array<string> = [
   />
 
   <FeaturesNavs
-    title=`Customize <span class="text-yellow-500 dark:text-yellow-400">ScrewFast</span>'s offerings to perfectly suit your hardware and construction needs.`
+    title=`Explore the capabilities of <span class="text-purple-900 dark:text-yellow-400">ozonerates</span>'s offerings to perfectly suit your research needs.`
     tabs={[
       {
-        heading: "Cutting-Edge Tools",
+        heading: "Cutting-Edge Algorithm (AI-powered)",
         content:
-          "Empower your projects with ScrewFast's cutting-edge tools. Experience enhanced efficiency in construction management with our sophisticated automated solutions.",
+          "We use a fine-tuned deep neural network trained by millions of aircraft data points to parameterize PO₃ capable of capturing 98% of variance and < 0.1 ppbv/hr bias",
         svg: "tools",
-        src: tools,
-        alt: "Yellow and black heavy equipment on brown grass field",
+        src: dnn,
+        alt: "Machine-learning based predictions",
         first: true,
       },
       {
-        heading: "Intuitive Dashboards",
+        heading: "Bias-corrected Satellite Data",
         content:
-          "Navigate with ease using ScrewFast's intuitive dashboards. Set up and oversee your projects seamlessly, with user-friendly interfaces designed for quick and effective workflow management.",
+          "Satellite data are usually contaimanted by large systematic biases. Our product takes advantage of a global network of ground remote sensing observations (MAX-DOAS and FTIR) to effectively mitigate those biases.",
         svg: "dashboard",
-        src: dashboard,
+        src: tropomi_val,
         alt: "A screenshot or graphic representation of the intuitive dashboard",
-        second: true,
       },
       {
-        heading: "Robust Features",
+        heading: "A NASA-designed High-resolution Global Model",
         content:
-          "Minimize complexity, maximize productivity. ScrewFast's robust features are engineered to streamline your construction process, delivering results that stand out for their excellence.",
-        svg: "house",
-        src: construction,
+          "A dynamically varying cutting-edged model from NASA GSFC is used to convert satellite columns to the near-surface mixing ratios.",
+        svg: "dashboard",
+        src: minds_showcase,
+        alt: "Gray metal building frame near tower crane during daytime",
+      },
+      {
+        heading: "Careful Quantifications of Errors",
+        content:
+           "To ensure confidence in our results, we've integrated multiple error sources, allowing users to trust and rely on our product with greater certainty.",
+        svg: "dashboard",
+        src: error_char,
         alt: "Gray metal building frame near tower crane during daytime",
       },
     ]}
   />
 
   <TestimonialsSection
-    title="Fast-Track Your Projects"
-    subTitle="At ScrewFast, we ensure a swift start with instant account setup. Experience the speed of construction redefined."
+    title="Why should we care about high ozone production rates?"
+    subTitle=""
     ;
     testimonials={[
       {
         content:
-          "ScrewFast dramatically boosted our project efficiency. Setup was instant, and their rapid response times are phenomenal. Truly a game-changer in hardware and construction support!",
-        author: "Samantha Ruiz",
-        role: "Chief Operating Officer | ConstructIt Inc.",
+          "Tropospheric ozone is not only a major pollutant affecting public health, but it also has significant impacts on crop yields and contributes to climate change.",
+        author: "Dr. Drew Shindell",
+        role: "Distinguished Professor of Earth Science",
         avatarSrc:
-          "https://images.unsplash.com/photo-1593104547489-5cfb3839a3b5?q=80&w=1453&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80",
+          "https://nicholas.duke.edu/sites/default/files/styles/square/public/images/162714_shindell002.jpg?h=04c64174&itok=WtKwUFXZ",
       },
     ]}
     statistics={[
       {
-        count: "70k+",
+        count: "6.3 million",
         description:
-          "customers equipped — from DIY to major construction firms",
+          "years of life annually lost due to premature mortality exposed to elevated surface ozone (Anenberg et al. 2010)",
       },
       {
-        count: "35%",
+        count: "85 Tg",
         description:
-          "uptick in project efficiency with ScrewFast tools and services",
+          "wheat grain loss due to ozone (Mills et al. 2018)",
       },
       {
-        count: "15.3%",
+        count: "$14-26 B",
         description:
-          "reduction in maintenance costs reported by long-term clients",
+          "economical loss due to reduced crop yield annually (Mills et al., 2018)",
       },
       {
-        count: "2x",
-        description: "quicker assembly using innovative fastening solutions",
+        count: "+0.40 W/m²",
+        description: "added radiative forcing accelerating global warming (IPCC, 2023)",
       },
     ]}
   />
 
-  <PricingSection pricing={pricing} />
-
+  <section id="faq">
   <FAQ title="Frequently<br />asked questions" faqs={faqs} />
+  </section>
 
-  <HeroSectionAlt
-    title="Let's Build Together"
-    subTitle="ScrewFast is an open-source template, meticulously crafted with Astro, Tailwind CSS, and Preline UI frameworks."
-    url="https://github.com/mearashadowfax/ScrewFast"
-  />
 </MainLayout>

@@ -14,6 +14,8 @@ interface Props {
   first?: boolean;
   second?: boolean;
 }
+
+
 // Set class based on 'first' property
 // If 'first' is present, show the tab content immediately
 const firstClass = first ? "" : "hidden";
@@ -38,6 +40,7 @@ This is the full example:
 <TabContent id="" aria="" src="" alt="" second={true}/>
 <TabContent id="" aria="" src="" alt="" />
 */
+
 ---
 
 <!-- Container for tab content that controls visibility and accessibility -->
@@ -48,7 +51,8 @@ This is the full example:
     alt={alt}
     class={secondClass}
     draggable={"false"}
-    format={"avif"}
+    format={"png"}
     loading={"eager"}
   />
 </div>
+
