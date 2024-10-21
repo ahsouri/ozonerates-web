@@ -1,16 +1,15 @@
 ---
 // Import AvatarTestimonialSection component for use in this module
 import AvatarTestimonialSection from "../../ui/avatars/AvatarTestimonialSection.astro";
+import { Image } from "astro:assets";
 
-// Define props from Astro
-const { title, testimonials } = Astro.props;
 
 // Define TypeScript interface for Testimonial
 interface Testimonial {
   content: string;
   author: string;
   role: string;
-  avatarSrc: string;
+  avatarSrc: ImageMetadata;
   avatarAlt: string;
 }
 
@@ -19,6 +18,9 @@ interface Props {
   title: string;
   testimonials: Testimonial[];
 }
+
+// Define props from Astro
+const { title, testimonials } = Astro.props;
 ---
 <!-- Main div that wraps the testimonials section -->
 <section
@@ -49,10 +51,15 @@ interface Props {
 
             <div class="rounded-b-xl bg-neutral-300/30 p-4 dark:bg-neutral-900/30 md:px-7">
               <div class="flex items-center">
-                <AvatarTestimonialSection
+                <Image
+                  class="size-8 rounded-full sm:h-[2.875rem] sm:w-[2.875rem]"
                   src={testimonial.avatarSrc}
                   alt={testimonial.avatarAlt}
-                />
+                  loading="lazy"
+                  width={46} 
+                  format={"png"}
+                  height={46}>
+                </Image>
 
                 <div class="ms-3 grow">
                   <p class="text-sm font-bold text-neutral-800 dark:text-neutral-200 sm:text-base">

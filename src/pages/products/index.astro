@@ -6,12 +6,11 @@ import CardSmall from "@components/ui/cards/CardSmall.astro";
 import CardWide from "@components/ui/cards/CardWide.astro";
 import FeaturesStatsAlt from "@components/sections/features/FeaturesStatsAlt.astro";
 import TestimonialsSectionAlt from "@components/sections/testimonials/TestimonialsSectionAlt.astro";
-import unknownimg from "@images/unknown.png"
 // Importing necessary functions from Astro
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { SITE } from "@data/constants";
-
+import unknownimg from "@images/unknown.png"
 // Fetching all the product related content and sorting it by main.id
 const product: CollectionEntry<"products">[] = (
   await getCollection("products", ({ id }) => {
@@ -26,15 +25,15 @@ const product: CollectionEntry<"products">[] = (
 const title: string = "Products";
 const subTitle: string =""
 // Testimonial data that will be rendered in the component
-const testimonials = [
+const testimonial_data = [
   // First testimonial data
   {
     content:
       " \"Tell us what you think about our product so we can add your testimonial here\" ",
     author: "You?",
-    role: "",
+    role: "author",
     avatarSrc: unknownimg,
-    avatarAlt: "",
+    avatarAlt: "Avatar",
   },
   // Second testimonial data
 
@@ -107,8 +106,5 @@ const pageTitle: string = `Products | ${SITE.title}`;
     ]}
   /> -->
   <!--Testimonials section-->
-  <TestimonialsSectionAlt
-    title="What our product users say: "
-    testimonials={testimonials}
-  />
+  <TestimonialsSectionAlt  title="What Our Clients Say" testimonials={testimonial_data}></TestimonialsSectionAlt>
 </MainLayout>
