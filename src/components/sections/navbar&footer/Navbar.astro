@@ -6,7 +6,8 @@ import Authentication from "../misc/Authentication.astro";
 import enStrings from "@utils/navigation.ts";
 import BrandLogo from "@components/BrandLogo.astro";
 import LanguagePicker from "@components/ui/LanguagePicker.astro";
-
+import { Image } from "astro:assets";
+import logo from "@images/ozonerates_logo.png"
 // Select the correct translation based on the page's lang prop:
 const strings = Astro.currentLocale === "fr" ? enStrings : enStrings;
 const homeUrl = Astro.currentLocale === "en" ? "/" : "/";
@@ -28,7 +29,13 @@ const homeUrl = Astro.currentLocale === "en" ? "/" : "/";
         href={homeUrl}
         aria-label="Brand"
       >
-      <img src="/src/images/ozonerates_logo.png" alt="Logo" class="h-auto w-40" />
+      <Image 
+      src={logo} 
+      alt="Ozone Rates Logo" 
+      class="h-auto w-40" 
+      height={100}
+      format="png"
+     />
       </a>
       <!-- Collapse toggle for smaller screens -->
       <div class="ml-auto mr-5 md:hidden">
