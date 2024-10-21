@@ -38,7 +38,7 @@ const crafted: string = Astro.currentLocale === "fr" ? "Fabriqué par" : "Crafte
       <div class="col-span-2">
 
         <form>
-          <EmailFooterInput client:visible/>
+          <EmailFooterInput client:load/>
           <p class="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
             {sectionThreeContent}
           </p>

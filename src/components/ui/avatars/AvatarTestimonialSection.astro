@@ -1,5 +1,7 @@
 ---
+import { Image } from "astro:assets";
 const { src, alt } = Astro.props;
+
 
 interface Props {
   src: string;
@@ -8,10 +10,11 @@ interface Props {
 ---
 
 <div class="flex-shrink-0">
-  <img
-    class="size-8 rounded-full sm:h-[2.875rem] sm:w-[2.875rem]"
-    src={src}
-    alt={alt}
-    loading="lazy"
-  />
+  <Image
+  class="size-8 rounded-full sm:h-[2.875rem] sm:w-[2.875rem]"
+  src={src}
+  alt={alt}
+  loading="lazy"
+  width={46} 
+  height={46}></Image>
 </div>

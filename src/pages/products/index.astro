@@ -6,7 +6,7 @@ import CardSmall from "@components/ui/cards/CardSmall.astro";
 import CardWide from "@components/ui/cards/CardWide.astro";
 import FeaturesStatsAlt from "@components/sections/features/FeaturesStatsAlt.astro";
 import TestimonialsSectionAlt from "@components/sections/testimonials/TestimonialsSectionAlt.astro";
-
+import unknownimg from "@images/unknown.png"
 // Importing necessary functions from Astro
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -33,9 +33,8 @@ const testimonials = [
       " \"Tell us what you think about our product so we can add your testimonial here\" ",
     author: "You?",
     role: "",
-    avatarSrc:
-      "src/images/unknown.png",
-    avatarAlt: "Image Description",
+    avatarSrc: unknownimg,
+    avatarAlt: "",
   },
   // Second testimonial data
 
