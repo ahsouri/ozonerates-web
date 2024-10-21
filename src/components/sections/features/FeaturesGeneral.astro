@@ -3,7 +3,8 @@
 import { Image } from "astro:assets";
 import IconBlock from "@components/ui/blocks/IconBlock.astro";
 import Icon from "@components/ui/icons/Icon.astro";
-
+import before from "@images/spring.png"
+import after from "@images/winter.png"
 interface Feature {
   heading: string;
   content: string;
@@ -19,8 +20,8 @@ interface Props {
 }
 // Define props from Astro
 const { title, subTitle, src, alt, features } = Astro.props;
-const image1 = "images/spring.png"; // Image path for the base image
-const image2 = "images/winter.png"; // Image path for the overlay image
+const image1 = before; // Image path for the base image
+const image2 = after; // Image path for the overlay image
 ---
 
 <section
@@ -80,10 +81,10 @@ const image2 = "images/winter.png"; // Image path for the overlay image
 
 <div class="comparison-container" id="comparison">
   <!-- Base image -->
-  <img src={image1} alt="Base Image" style="border: 1px solid #000;height: 600px"/>
+  <Image src={image1} alt="Base Image" style="border: 1px solid #000;height: 600px"/>
 
   <!-- Overlay image -->
-  <img src={image2} alt="Overlay Image" class="overlay-image w-full"  id="overlayImage" style="border: 1px solid #000;height: 600px" />
+  <Image src={image2} alt="Overlay Image" class="overlay-image w-full"  id="overlayImage" style="border: 1px solid #000;height: 600px" />
 
   <!-- Custom Circular Slider -->
   <div class="slider">
