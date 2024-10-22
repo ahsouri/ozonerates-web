@@ -25,14 +25,14 @@ const product: CollectionEntry<"products">[] = (
 const title: string = "Products";
 const subTitle: string =""
 // Testimonial data that will be rendered in the component
-const testimonial_data = [
+const testimonial = [
   // First testimonial data
   {
     content:
       " \"Tell us what you think about our product so we can add your testimonial here\" ",
     author: "You?",
     role: "author",
-    avatarSrc: unknownimg,
+    avatarSrc: unknownimg.src,
     avatarAlt: "Avatar",
   },
   // Second testimonial data
@@ -106,5 +106,5 @@ const pageTitle: string = `Products | ${SITE.title}`;
     ]}
   /> -->
   <!--Testimonials section-->
-  <TestimonialsSectionAlt  title="What Our Clients Say" testimonials={testimonial_data}></TestimonialsSectionAlt>
+  <TestimonialsSectionAlt  title="What Our Clients Say" testimonials={testimonial}></TestimonialsSectionAlt>
 </MainLayout>

@@ -3,13 +3,15 @@
 import AvatarTestimonialSection from "../../ui/avatars/AvatarTestimonialSection.astro";
 import { Image } from "astro:assets";
 
+// Define props from Astro
+const { title, testimonials } = Astro.props;
 
 // Define TypeScript interface for Testimonial
 interface Testimonial {
   content: string;
   author: string;
   role: string;
-  avatarSrc: ImageMetadata;
+  avatarSrc: string;
   avatarAlt: string;
 }
 
@@ -19,8 +21,6 @@ interface Props {
   testimonials: Testimonial[];
 }
 
-// Define props from Astro
-const { title, testimonials } = Astro.props;
 ---
 <!-- Main div that wraps the testimonials section -->
 <section
