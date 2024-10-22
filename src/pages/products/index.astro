@@ -10,7 +10,6 @@ import TestimonialsSectionAlt from "@components/sections/testimonials/Testimonia
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { SITE } from "@data/constants";
-import unknownimg from "@images/unknown.png"
 // Fetching all the product related content and sorting it by main.id
 const product: CollectionEntry<"products">[] = (
   await getCollection("products", ({ id }) => {
@@ -32,7 +31,7 @@ const testimonial = [
       " \"Tell us what you think about our product so we can add your testimonial here\" ",
     author: "You?",
     role: "author",
-    avatarSrc: unknownimg.src,
+    avatarSrc: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg",
     avatarAlt: "Avatar",
   },
   // Second testimonial data
