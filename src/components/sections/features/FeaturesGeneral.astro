@@ -27,111 +27,123 @@ const image2 = after; // Image path for the overlay image
 <section
   class="mx-auto max-w-[85rem] px-4 py-0 sm:px-6 lg:px-8 lg:py-0 2xl:max-w-full"
 >
+  <style>
+    .comparison-container {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+    }
 
-<style>
-  .comparison-container {
-    position: relative;
-    width: 100%;
-    height: 500px;
-    overflow: hidden;
-  }
+    .comparison-container img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  .comparison-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+    .overlay-image {
+      clip-path: inset(0 20% 0 0); /* Initially shows part of the overlay image */
+      transition: clip-path 0.2s ease-out;
+    }
 
-  .overlay-image {
-    clip-path: inset(0 20% 0 0); /* Initially shows half of the overlay image */
-    transition: clip-path 0.2s ease-out;
-  }
+    /* The draggable slider */
+    .slider {
+      position: absolute;
+      top: 50%;
+      left: 80%;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(9, 132, 255, 0.3); /* Semi-transparent background */
+      border-radius: 50%;
+      cursor: ew-resize;
+      z-index: 2;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: left 0.2s ease-out;
+    }
 
-  /* The draggable slider */
-  .slider {
-    position: absolute;
-    top: 50%;
-    left: 80%;
-    width: 0px;
-    height: 0px;
-    background-color: rgba(9, 132, 255, 0.6); /* Semi-transparent background */
-    border: 0px solid rgb(1, 23, 45);
-    cursor: ew-resize;
-    z-index: 2;
-    transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: left 0.2s ease-out;
-  }
+    /* Arrow styling */
+    .slider .arrow {
+      font-size: 50px;
+      color: rgba(213, 218, 229, 0.8);
+      user-select: none;
+    }
+  </style>
 
-  /* Arrow styling for the left and right arrows */
-  .slider .arrow {
-    font-size: 50px;
-    color: rgba(213, 218, 229, 0.8);
-    margin: 0 5px;
-    user-select: none; /* Prevent text selection */
-  }
-
-
-</style>
-
-<div class="comparison-container" id="comparison">
+  <div class="comparison-container" id="comparison">
   <!-- Base image -->
-  <Image src={image1} alt="Base Image" style="border: 1px solid #000;height: 600px"/>
+  <Image src={image1} alt="Base Image" style="border: 1px solid #000"/>
 
   <!-- Overlay image -->
-  <Image src={image2} alt="Overlay Image" class="overlay-image w-full"  id="overlayImage" style="border: 1px solid #000;height: 600px" />
+  <Image src={image2} alt="Overlay Image" class="overlay-image w-full"  id="overlayImage" style="border: 1px solid #000" />
 
-  <!-- Custom Circular Slider -->
-  <div class="slider">
-    <span class="arrow">←</span>
-    <span class="arrow">→</span>
+    <!-- Custom Circular Slider -->
+    <div class="slider">
+      <span class="arrow">←</span>
+      <span class="arrow">→</span>
+    </div>
   </div>
-</div>
 
-<script>
-  const container = document.querySelector('.comparison-container');
-  const slider = container!.querySelector('.slider');
-  const overlayImage = container!.querySelector('.overlay-image');
-  let isDragging = false;
+  <script>
+    const container = document.querySelector('.comparison-container');
+    const slider = container!.querySelector('.slider');
+    const overlayImage = container!.querySelector('.overlay-image');
+    let isDragging = false;
 
-  // Function to handle mouse movement while dragging
-  const handleMouseMove = (event: { clientX: number }) => {
-  if (!isDragging) return;
+    // Function to handle movement (mouse or touch)
+    const handleMove = (clientX: number) => {
+      const containerRect = container!.getBoundingClientRect();
+      let newLeft = clientX - containerRect.left;
 
-  const containerRect = container!.getBoundingClientRect();
-  let newLeft = event.clientX - containerRect.left;
+      // Limit the slider to the container bounds
+      if (newLeft < 0) newLeft = 0;
+      if (newLeft > containerRect.width) newLeft = containerRect.width;
 
-  // Limit the slider to the container bounds
-  if (newLeft < 0) newLeft = 0;
-  if (newLeft > containerRect.width) newLeft = containerRect.width;
+      // Update the slider position
+      const newLeftPercentage = (newLeft / containerRect.width) * 100;
 
-  // Update the slider position
-  const newLeftPercentage = (newLeft / containerRect.width) * 100;
+      // Update the slider and overlay image's clip-path
+      // Cast slider and overlayImage to HTMLElement before accessing style
+      (slider as HTMLElement).style.left = `${newLeftPercentage}%`;
 
-  // Cast slider and overlayImage to HTMLElement before accessing style
-  (slider as HTMLElement).style.left = `${newLeftPercentage}%`;
+      // Update the overlay image's clip-path based on slider position
+      (overlayImage as HTMLElement).style.clipPath = `inset(0 ${100 - newLeftPercentage}% 0 0)`;
+    };
 
-  // Update the overlay image's clip-path based on slider position
-  (overlayImage as HTMLElement).style.clipPath = `inset(0 ${100 - newLeftPercentage}% 0 0)`;
-};
+    // Handle mouse events
+    slider!.addEventListener('mousedown', () => {
+      isDragging = true;
+    });
 
-  // Handle mouse down event to start dragging
-  slider!.addEventListener('mousedown', () => {
-    isDragging = true;
-  });
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
 
-  // Handle mouse up event to stop dragging
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
+    document.addEventListener('mousemove', (event) => {
+      if (isDragging) {
+        handleMove(event.clientX);
+      }
+    });
 
-  // Handle mouse move event to adjust the slider and overlay image
-  document.addEventListener('mousemove', handleMouseMove);
-</script>
+    // Handle touch events
+    slider!.addEventListener('touchstart', () => {
+      isDragging = true;
+    });
 
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    document.addEventListener('touchmove', (event) => {
+      if (isDragging) {
+        const touch = event.touches[0]; // Get the first touch point
+        handleMove(touch.clientX);
+      }
+    });
+  </script>
 </section>
