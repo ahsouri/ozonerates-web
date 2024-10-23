@@ -3,9 +3,9 @@ import ogImageSrc from "@images/social.png";
 export const SITE = {
   title: "Ozonerates",
   tagline: "Estimating PO3 from Space",
-  description: "ScrewFast offers top-tier hardware tools and expert construction services to meet all your project needs. Start exploring and contact our sales team for superior quality and reliability.",
-  description_short: "ScrewFast offers top-tier hardware tools and expert construction services to meet all your project needs.",
-  url: "https://screwfast.uk",
+  description: "We have established a robust relationship between ozone production rates and several geophysical parameters obtained from several intensive atmospheric composition campaigns. We have shown that satellite remote sensing data can effectively constrain these parameters, enabling us to produce the first global maps of ozone production rates with unprecedented resolution.",
+  description_short: "We produce global maps of PO3 determined from space.",
+  url: "https://ozonerates.space",
   author: "Amir Souri",
 };
 
@@ -33,7 +33,7 @@ export const OG = {
   locale: "en_US",
   type: "website",
   url: SITE.url,
-  title: `${SITE.title}: : Hardware Tools & Construction Services`,
-  description: "Equip your projects with ScrewFast's top-quality hardware tools and expert construction services. Trusted by industry leaders, ScrewFast offers simplicity, affordability, and reliability. Experience the difference with user-centric design and cutting-edge tools. Start exploring now!",
+  title: `${SITE.title}: : Official Website to Get Informed About PO3 Products Determined from Space`,
+  description: "We have established a robust relationship between ozone production rates and several geophysical parameters obtained from several intensive atmospheric composition campaigns. We have shown that satellite remote sensing data can effectively constrain these parameters, enabling us to produce the first global maps of ozone production rates with unprecedented resolution.",
   image: ogImageSrc,
 };

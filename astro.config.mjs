@@ -35,6 +35,7 @@ export default defineConfig({
       },
     }),
     react(),
+    
     starlight({
       title: "ScrewFast Docs",
       defaultLocale: "root",
@@ -85,8 +86,9 @@ export default defineConfig({
           autogenerate: { directory: "advanced" },
         },
       ],
+      
       social: {
-        github: "https://github.com/mearashadowfax/ScrewFast",
+        github: "https://github.com/",
       },
       disable404Route: true,
       customCss: ["./src/assets/styles/starlight.css"],
@@ -102,14 +104,14 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             property: "og:image",
-            content: "https://screwfast.uk" + "/social.webp",
+            content: "https://ozonerates.space" + "/social.webp",
           },
         },
         {
           tag: "meta",
           attrs: {
             property: "twitter:image",
-            content: "https://screwfast.uk" + "/social.webp",
+            content: "https://ozonerates.space" + "/social.webp",
           },
         },
       ],
@@ -124,4 +126,5 @@ export default defineConfig({
     clientPrerender: true,
     directRenderScript: true,
   },
+  
 });
