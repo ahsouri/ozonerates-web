@@ -1,4 +1,4 @@
-import ogImageSrc from "@images/social.png";
+import ogImageSrc from "@images/ozonerates_logo.png";
 
 export const SITE = {
   title: "Ozonerates",
