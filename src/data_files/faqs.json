@@ -24,6 +24,10 @@
     {
       "question": "What advantages can I gain from analyzing the long-term trends of your product compared to surface ozone levels?",
       "answer": "Ozone concentration is influenced by numerous physiochemical processes, including transport, dry deposition, and chemical reactions, making it difficult to attribute surface ozone trends to any single factor without the use of models. Our product specifically targets one key aspect of near-surface ozone formation by isolating the impact of local VOCs and NOx on PO3. This makes it easier to connect the analysis of our product to local regulatory measures."
+    },
+    {
+      "question": "What are the terms of use? are we expected to pay?",
+      "answer": "All products advertised here, including the website itself, are free of charge. When using our products in your research, please cite the publications related to them."
     }
   ]
 }
