@@ -9,6 +9,7 @@ import FeaturesStats from "@components/sections/features/FeaturesStats.astro";
 // Import necessary images
 import amir from "@images/amir.png";
 import gonzalo from "@images/gonzalo_gonzalez_abad_refractor_small.jpg"
+import matthew from "@images/matthew_nasa.jpg"
 import personWorking from "@images/person-working.avif";
 import beforeAfter from "@images/before-after.avif";
 import constructionWorkers from "@images/construction-workers.avif";
@@ -51,9 +52,20 @@ const articles: Article[] = [
     isRightSection: false,
     title: "Co-Investigator: Dr. Gonzalo González Abad",
     subTitle:
-      "",
+      "Gonzalo, has been checking atmospheric composition from space for the past 15 years using infrared, visible and ultraviolet radiation. His work focuses on creating retrieval algorithms to extract gas concentrations from satellite observations. Since joining the Harvard-Smithsonian Center for Astrophysics in 2011 (after completing his PhD. at the University of York), Gonzalo has worked with multiple satellite instruments (OMI, OMPS, TROPOMI, TEMPO…) providing valuable datasets of formaldehyde, glyoxal, water vapor and nitrogen dioxide to the air quality and atmospheric composition communities. He brings to the “ozonerates” project his experience with these retrievals and his familiarity with the multiple nuances inherent to satellite observations.",
     img: gonzalo,
     imgAlt: "gonzalo at CFA",
+  },
+  {
+    isRightSection: true,
+    title: "Scientific Collaborator: Dr. Matthew Johnson",
+    subTitle: `Matthew is a Research Scientist in the Earth Science Division at NASA Ames Research Center. His research focuses on the application of satellite- and ground-based remote-sensing, in situ measurements, and forward and inverse chemical transport modeling to evaluate processes impacting climate and air quality. His expertise in chemical transport modeling and remote-sensing data application to define processes controlling ozone chemistry led to his collaboration on this project producing the "ozonerates" package. Matthew’s research has resulted in over 70 published manuscripts, and he has been the PI on multiple federally-funded research projects.`,
+    single: true,
+    imgOne: matthew,
+    imgOneAlt: "matt",
+    btnExists: true,
+    btnTitle: "Check out his personal webpage",
+    btnURL: "https://www.nasa.gov/people/matthew-s-johnson/",
   },
 ];
 

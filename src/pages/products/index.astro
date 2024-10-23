@@ -21,7 +21,7 @@ const product: CollectionEntry<"products">[] = (
 );
 
 // Define variables for page content
-const title: string = "Products";
+const title: string = "Free Products";
 const subTitle: string =""
 // Testimonial data that will be rendered in the component
 const testimonial = [
@@ -30,7 +30,7 @@ const testimonial = [
     content:
       " \"Tell us what you think about our product so we can add your testimonial here\" ",
     author: "You?",
-    role: "author",
+    role: "",
     avatarSrc: "/unknown.png",
     avatarAlt: "Avatar",
   },
@@ -105,5 +105,5 @@ const pageTitle: string = `Products | ${SITE.title}`;
     ]}
   /> -->
   <!--Testimonials section-->
-  <TestimonialsSectionAlt  title="What Our Clients Say" testimonials={testimonial}></TestimonialsSectionAlt>
+  <TestimonialsSectionAlt  title="What our data users say" testimonials={testimonial}></TestimonialsSectionAlt>
 </MainLayout>

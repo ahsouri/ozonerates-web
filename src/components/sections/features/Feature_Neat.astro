@@ -1,0 +1,48 @@
+---
+interface Feature {
+  title: string;
+  description: string;
+  icon: string; // Path to the GIF or image
+}
+
+interface Props {
+  title?: string;
+  subTitle?: string;
+  features: Feature[];
+}
+
+// Destructure the props passed into the component
+const { title, subTitle, features } = Astro.props;
+---
+
+<section class="features-section mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+  <!-- Section Header -->
+  <div class="text-center mb-12">
+    <h2 class="text-4xl font-extrabold text-neutral-900 dark:text-white">
+      <!-- Use set:html to allow HTML in the title -->
+      <Fragment set:html={title ?? 'Features'} />
+    </h2>
+    <p class="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
+      <!-- Use set:html to allow HTML in the subTitle -->
+      <Fragment set:html={subTitle ?? 'What you get with AstroWind'} />
+    </p>
+  </div>
+
+  <!-- Features 2x2 Grid -->
+  <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-2">
+    {features.map((feature) => (
+      <div class="feature-card p-6 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:shadow-lg transition-shadow duration-300">
+        <div class="flex justify-center mb-4">
+          <!-- Display the GIF or image -->
+          <img src={feature.icon} alt={`${feature.title} icon`} class="h-12 w-12" />
+        </div>
+        <h3 class="text-xl font-semibold text-neutral-900 dark:text-white">
+          {feature.title}
+        </h3>
+        <p class="mt-3 text-neutral-600 dark:text-neutral-400">
+          {feature.description}
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
