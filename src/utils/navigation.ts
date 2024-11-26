@@ -26,7 +26,7 @@ const footerLinks = [
 // An object of links for social icons
 const socialLinks = {
   x: "https://twitter.com/",
-  github: "https://github.com/mearashadowfax/ScrewFast",
+  github: "hhttps://github.com/ahsouri/ozonerates-web",
 };
 
 export default {
