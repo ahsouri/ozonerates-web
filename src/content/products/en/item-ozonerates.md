@@ -2,7 +2,7 @@
 title: 'Ozonerates software'
 description: "Produce your own product with our powerful algorithm"
 main:
-  id: 2
+  id: 3
   content: ""
   imgCard: "@/images/Is-Python-good-for-software-development.png"
   imgMain: "@/images/Is-Python-good-for-software-development.png"

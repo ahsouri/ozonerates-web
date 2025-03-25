@@ -2,7 +2,7 @@
 title: "TROPOMI-based PO₃"
 description: "Leverage the TROPOMI high spatial resolution"
 main:
-  id: 3
+  id: 2
   content: ""
   imgCard: "@/images/TROPOMI_PO3.png"
   imgMain: "@/images/TROPOMI_PO3.png"
