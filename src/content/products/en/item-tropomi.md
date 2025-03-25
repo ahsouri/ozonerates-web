@@ -4,8 +4,8 @@ description: "Leverage the TROPOMI high spatial resolution"
 main:
   id: 3
   content: ""
-  imgCard: "@/images/coming_soon.jpg"
-  imgMain: "@/images/coming_soon.jpg"
+  imgCard: "@/images/TROPOMI_PO3.png"
+  imgMain: "@/images/TROPOMI_PO3.png"
   imgAlt: "TROPOMI-based PO₃"
 tabs:
   - id: "tabs-with-card-item-1"
@@ -20,9 +20,9 @@ tabs:
 longDescription:
   title: "A global product meets a fine resolution"
   subTitle: |
-    Introducing our advanced air quality analysis tool, leveraging bias-corrected TROPOMI HCHO and NO2 retrievals to deliver precise global daily PO₃ estimates. This product offers high spatial resolution at 0.1x0.1 degrees, covering the period from 2018 to 2024, along with corresponding sensitivity maps. Ideal for researchers and environmental scientists, it provides unparalleled accuracy and global coverage for tracking ozone pollution and understanding its impacts.
+    Introducing our advanced air quality product, leveraging bias-corrected TROPOMI HCHO and NO2 retrievals to deliver reasonable global daily PO₃ estimates. This product offers high spatial resolution at 0.1x0.1 degrees, covering the period from 2018 to 2023, along with corresponding sensitivity maps. Ideal for researchers and environmental scientists, it provides reasonable accuracy and global coverage for tracking locally-prodcued ozone pollution and understanding its impacts.
   btnTitle: "Download the data"
-  btnURL: "#"
+  btnURL: "https://doi.org/10.7910/DVN/LTY8JT"
 descriptionList:
   - title: "Bias-corrected TROPOMI data"
     subTitle: "We have meticulously corrected TROPOMI VCD biases using FTIR/MAX-DOAS observations."
@@ -38,7 +38,7 @@ specificationsLeft:
   - title: "Spatial Coverage"
     subTitle: "Global"
   - title: "Temporal Coverage"
-    subTitle: "2018-2024"
+    subTitle: "2018-2023"
 specificationsRight:
   - title: "Algorithm"
     subTitle: "A synergy of TROPOMI, MINDS, aircraft, and ground-based remote sensing data is used in a fine-tuned 
@@ -49,7 +49,7 @@ specificationsRight:
     subTitle: "We have included the DNN estimate error, the column to the surface conversion error, and TROPOMI unresolved and random errors into the equation to build confidence in our product."
 documentation:
   title: "Please cite the following papers if you use our product in your research:"
-  subTitle: "Reference: Souri et al., 2025, blah blah blah, Journal of Blah." 
+  subTitle: "Reference: Souri et al., 2025, Souri et al. (2025), Beyond HCHO/NO2: Ozonerates v1.0 Harnesses Satellite Data and Deep Learning to Provide Global Daily Net Ozone Production Rates and Sensitivity Maps Within Planetary Boundary Layer at ~1330 Local Standard Time (2005-2023) Souri, A. H., González Abad, G., Wolfe, G. M., Verhoelst, T., Vigouroux, C., Pinardi, G., Compernolle, S., Langerock, B., Duncan, B. N., and Johnson, M. S.: Feasibility of robust estimates of ozone production rates using a synergy of satellite observations, ground-based remote sensing, and models, Atmos. Chem. Phys., 25, 2061–2086, https://doi.org/10.5194/acp-25-2061-2025, 2025." 
   btnTitle: "Download the user guide"
   btnURL: "#"
 blueprints:
