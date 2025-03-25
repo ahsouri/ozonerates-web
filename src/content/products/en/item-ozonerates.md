@@ -18,9 +18,9 @@ tabs:
     dataTab: "#tabs-with-card-3"
     title: "Documentation and References"
 longDescription:
-  title: "An object-oriented python software to predict PO3"
+  title: "An object-oriented python software to predict PO₃"
   subTitle: |
-    Discover our cutting-edge air quality analysis tool, designed for long-term research with global coverage. By utilizing bias-corrected OMI HCHO and NO2 retrievals, this product generates PO₃ estimates and sensitivity maps at a spatial resolution of 0.25x0.25 degrees, spanning the period from 2005 to 2024. Perfect for long-term analysis, it provides reliable, comprehensive data for tracking ozone trends and environmental impacts over nearly two decades. Ideal for researchers seeking to understand air quality dynamics over time.
+    Discover our object-oriented Python package capable of ingesting satellite and model data, running DNN-based PO₃ prediction, and storing/documenting the outputs in a self-explanatory fashion.
   btnTitle: "Download the package"
   btnURL: "https://zenodo.org/records/15076487"
 descriptionList:

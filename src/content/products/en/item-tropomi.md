@@ -25,11 +25,11 @@ longDescription:
   btnURL: "https://doi.org/10.7910/DVN/LTY8JT"
 descriptionList:
   - title: "Bias-corrected TROPOMI data"
-    subTitle: "We have meticulously corrected TROPOMI VCD biases using FTIR/MAX-DOAS observations."
+    subTitle: "We have meticulously corrected TROPOMI VCD biases using FTIR/MAX-DOAS observations (Souri et al. 2025)."
   - title: "High-spatial resolution"
     subTitle: "All aspects of the product are produced at 0.1x0.1 degrees, suitable for urban air quality tracking."
   - title: "Valuable byproducts"
-    subTitle: "In addition to PO₃ estimates, we have offered you sensitivity maps of PO3 to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of TROPOMI and a state-of-the-art NASA's model"
+    subTitle: "In addition to PO₃ estimates, we have offered you sensitivity maps of PO₃ to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of TROPOMI and a state-of-the-art NASA's model"
 specificationsLeft:
   - title: "Spatial Resolution"
     subTitle: "0.1x0.1 degrees (~ 10x10 km2)"
@@ -44,7 +44,7 @@ specificationsRight:
     subTitle: "A synergy of TROPOMI, MINDS, aircraft, and ground-based remote sensing data is used in a fine-tuned 
      deep neural network algorithm"
   - title: "Key variables"
-    subTitle: "PO3 (ozone production rates estimates within PBL), PO3_error (absolute error budget), PO3_NO2 (the sensivitity of PO3 to NO2, a proxy for NOx), PO3_HCHO (the sensitivity of PO3 to HCHO, a proxy for VOC reactivity)"
+    subTitle: "PO3 (ozone production rates estimates within PBL), PO3_error (absolute error budget), PO3_NO2 (the sensivitity of PO₃ to NO2, a proxy for NOx), PO3_HCHO (the sensitivity of PO₃ to HCHO, a proxy for VOC reactivity)"
   - title: "Error quantification"
     subTitle: "We have included the DNN estimate error, the column to the surface conversion error, and TROPOMI unresolved and random errors into the equation to build confidence in our product."
 documentation:

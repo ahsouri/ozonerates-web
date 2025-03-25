@@ -25,9 +25,9 @@ longDescription:
   btnURL: "https://doi.org/10.7910/DVN/6QOCNF"
 descriptionList:
   - title: "Bias-corrected OMI data"
-    subTitle: "We have corrected TROPOMI VCD biases based on studies of Pinardi et al. (2021) and Ayazpour et al. (2024)."
+    subTitle: "We have corrected TROPOMI VCD biases based on studies of Pinardi et al. (2021) and Ayazpour et al. (2025)."
   - title: "High temporal coverage"
-    subTitle: "All aspects of the product are produced 2005-2024, suitable for anomaly detection and long-term trend analysis."
+    subTitle: "All aspects of the product are produced 2005-2019, suitable for anomaly detection and long-term trend analysis."
   - title: "Valuable byproducts"
     subTitle: "In addition to PO3 estimates, we have offered you sensitivity maps of PO₃ to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of OMI and a state-of-the-art NASA's model"
 specificationsLeft:
