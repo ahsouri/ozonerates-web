@@ -4,8 +4,8 @@ description: "Produce your own product with our powerful algorithm"
 main:
   id: 2
   content: ""
-  imgCard: "@/images/Is-Python-good-for-software-development.avif"
-  imgMain: "@/images/Is-Python-good-for-software-development.avif"
+  imgCard: "@/images/Is-Python-good-for-software-development.png"
+  imgMain: "@/images/Is-Python-good-for-software-development.png"
   imgAlt: "ozonerates"
 tabs:
   - id: "tabs-with-card-item-1"
