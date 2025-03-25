@@ -36,8 +36,8 @@ specificationsLeft:
   - title: "License"
     subTitle: "MIT"
 documentation:
-  title: "Please cite the following papers if you use our product in your research:"
-  subTitle: "Reference: Souri et al., 2025, blah blah blah, Journal of Blahgggggggggggggggggggggggggggggggggggggggggg" 
+  title: "Please cite the following package if you use our software in your research:"
+  subTitle: "Reference: Souri, A., & Gonzalez Abad, G. (2025). ahsouri/ozonerates: Ozonerates v1.0 (1.0). Zenodo. https://doi.org/10.5281/zenodo.15076487" 
   btnTitle: "See the code source"
   btnURL: "https://github.com/ahsouri/ozonerates"
 blueprints:
