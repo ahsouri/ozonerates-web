@@ -29,7 +29,7 @@ descriptionList:
   - title: "High temporal coverage"
     subTitle: "All aspects of the product are produced 2005-2019, suitable for anomaly detection and long-term trend analysis."
   - title: "Valuable byproducts"
-    subTitle: "In addition to PO3 estimates, we have offered you sensitivity maps of PO₃ to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of OMI and a state-of-the-art NASA's model"
+    subTitle: "In addition to PO₃ estimates, we have offered you sensitivity maps of PO₃ to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of OMI and a state-of-the-art NASA's model"
 specificationsLeft:
   - title: "Spatial Resolution"
     subTitle: "0.25x0.25 degrees (~ 25x25 km2)"
