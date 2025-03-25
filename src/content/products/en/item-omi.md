@@ -49,7 +49,17 @@ specificationsRight:
     subTitle: "We have included the DNN estimate error, the column to the surface conversion error, and OMI unresolved and random errors into the equation to build confidence in our product."
 documentation:
   title: "Please cite the following papers if you use our product in your research:"
-  subTitle: "Reference: 1) Souri et al. (2025), Beyond HCHO/NO2: Ozonerates v1.0 Harnesses Satellite Data and Deep Learning to Provide Global Daily Net Ozone Production Rates and Sensitivity Maps Within Planetary Boundary Layer at ~1330 Local Standard Time (2005-2023)                 2) Souri, A. H., González Abad, G., Wolfe, G. M., Verhoelst, T., Vigouroux, C., Pinardi, G., Compernolle, S., Langerock, B., Duncan, B. N., and Johnson, M. S.: Feasibility of robust estimates of ozone production rates using a synergy of satellite observations, ground-based remote sensing, and models, Atmos. Chem. Phys., 25, 2061–2086, https://doi.org/10.5194/acp-25-2061-2025, 2025." 
+  subTitle: >
+    Reference: 
+    1) Souri et al. (2025), Beyond HCHO/NO2: Ozonerates v1.0 Harnesses Satellite Data 
+    and Deep Learning to Provide Global Daily Net Ozone Production Rates and Sensitivity 
+    Maps Within Planetary Boundary Layer at ~1330 Local Standard Time (2005-2023)
+    
+    2) Souri, A. H., González Abad, G., Wolfe, G. M., Verhoelst, T., Vigouroux, C., 
+    Pinardi, G., Compernolle, S., Langerock, B., Duncan, B. N., and Johnson, M. S.: 
+    Feasibility of robust estimates of ozone production rates using a synergy of satellite 
+    observations, ground-based remote sensing, and models, Atmos. Chem. Phys., 25, 
+    2061–2086, https://doi.org/10.5194/acp-25-2061-2025, 2025.
   btnTitle: "Download the user guide"
   btnURL: "#"
 blueprints:
