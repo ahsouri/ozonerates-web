@@ -50,6 +50,13 @@ header {
     padding: 0 !important;
 }
 
+#map {
+    height: 700px;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden; /* Prevent any overflow */
+}
+
 header.header {
     background-color: transparent !important;
     height: 4.5rem !important;

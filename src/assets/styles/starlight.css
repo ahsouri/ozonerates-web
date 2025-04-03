@@ -64,6 +64,13 @@ header > div:first-of-type {
     width: auto !important;
 }
 
+#map {
+    height: 700px;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden; /* Prevent any overflow */
+}
+
 #starlight__sidebar {
     border-radius: 1rem;
     margin-top: 2rem !important;
