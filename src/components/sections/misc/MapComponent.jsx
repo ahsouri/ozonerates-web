@@ -48,7 +48,7 @@ export default function MapComponent() {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || typeof window === 'undefined') return;
 
     const leafletMap = L.map("map", {
       minZoom: 2,
