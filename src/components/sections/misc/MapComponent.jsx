@@ -1,7 +1,6 @@
+'use client'; // Add this directive at the top
 import { useEffect, useState } from "react";
-import L from "leaflet";
-import parseGeoraster from "georaster";
-import GeoRasterLayer from "georaster-layer-for-leaflet";
+import dynamic from 'next/dynamic';
 import "leaflet/dist/leaflet.css";
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
@@ -52,15 +51,36 @@ export default function MapComponent() {
   const [map, setMap] = useState(null);
   const [rasterLayer, setRasterLayer] = useState(null);
   const [legend, setLegend] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Dynamic imports for browser-only libraries
+  const [L, setL] = useState(null);
+  const [parseGeoraster, setParseGeoraster] = useState(null);
+  const [GeoRasterLayer, setGeoRasterLayer] = useState(null);
 
   useEffect(() => {
-
+    setIsClient(true);
     const loadLibraries = async () => {
-        const { default: GeoRasterLayer } = await import('georaster-layer-for-leaflet');
-        const { parseGeoraster } = await import('georaster');
-        // Store these in state or ref for later use
-      };
-      loadLibraries();
+      try {
+        const L = (await import('leaflet')).default;
+        const georaster = await import('georaster');
+        const GeoRasterLayer = (await import('georaster-layer-for-leaflet')).default;
+        
+        setL(L);
+        setParseGeoraster(georaster.parseGeoraster || georaster.default?.parseGeoraster);
+        setGeoRasterLayer(GeoRasterLayer);
+        
+        initializeMap(L);
+      } catch (error) {
+        console.error("Error loading libraries:", error);
+      }
+    };
+    
+    loadLibraries();
+  }, []);
+
+  const initializeMap = (L) => {
+    if (!L || !isClient) return;
 
     const newMap = L.map("map", {
       minZoom: 2,
@@ -70,32 +90,31 @@ export default function MapComponent() {
       worldCopyJump: false
     }).setView([20, 0], 2);
 
-    
-
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       noWrap: true,
       bounds: [[-85, -175], [85, 175]],
       attribution: '© OpenStreetMap contributors'
     }).addTo(newMap);
 
-    const newLegend = createLegend(selectedData);
+    const newLegend = createLegend(L, selectedData);
     newLegend.addTo(newMap);
     setLegend(newLegend);
-
     setMap(newMap);
 
     return () => {
       newMap.remove();
     };
-  }, []);
+  };
 
-  const createLegend = (dataType) => {
+  const createLegend = (L, dataType) => {
+    if (!L) return;
+    
     const isNO2OrHCHO = dataType === "NO2 PBL mixing ratios" || dataType === "HCHO PBL mixing ratios";
-    const isNO2VCD = dataType === "HCHO VCDs" 
+    const isNO2VCD = dataType === "HCHO VCDs";
     const isHCHOVCD = dataType === "NO2 VCDs";
     const isJNO2 = dataType === "JNO2";
-    const isPO3 =  dataType === "PO3";
-    const isPO3sens = dataType === "Sens. to NOx" || dataType === "Sens. to VOC" 
+    const isPO3 = dataType === "PO3";
+    const isPO3sens = dataType === "Sens. to NOx" || dataType === "Sens. to VOC";
     
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function() {
@@ -187,12 +206,11 @@ export default function MapComponent() {
   };
 
   const loadGeoTiff = async () => {
-    if (!map) return;
+    if (!map || !parseGeoraster || !GeoRasterLayer) return;
 
     const monthNumber = monthToNumber[selectedMonth];
     let fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNumber}.tif`;
     
-    // GitHub raw content URL (replace with your actual repo details)
     const geoTiffUrl = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
     
     console.log('Loading GeoTIFF from:', geoTiffUrl);
@@ -230,7 +248,7 @@ export default function MapComponent() {
       if (legend) {
         map.removeControl(legend);
       }
-      const newLegend = createLegend(selectedData);
+      const newLegend = createLegend(L, selectedData);
       newLegend.addTo(map);
       setLegend(newLegend);
 
@@ -239,6 +257,23 @@ export default function MapComponent() {
       alert(`Failed to load GeoTIFF: ${error.message}`);
     }
   };
+
+  if (!isClient) {
+    return (
+      <div style={{ 
+        height: "700px", 
+        width: "100%", 
+        marginBottom: "20px",
+        backgroundColor: "#000",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "white"
+      }}>
+        Loading map...
+      </div>
+    );
+  }
 
   return (
     <div>
