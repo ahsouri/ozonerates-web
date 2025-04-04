@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import L from "leaflet";
-import pkg from 'georaster';
-const { parseGeoraster } = pkg;
-import GeoRasterLayer from 'georaster-layer-for-leaflet';
+import parseGeoraster from "georaster";
+import GeoRasterLayer from "georaster-layer-for-leaflet";
 import "leaflet/dist/leaflet.css";
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
