@@ -1,9 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
-import L from "leaflet";
+import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import GeoRasterLayer from "georaster-layer-for-leaflet";
-import parseGeoraster from "georaster";
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -45,35 +43,51 @@ export default function MapComponent() {
 
   useEffect(() => {
     setIsMounted(true);
+    return () => setIsMounted(false);
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (!isMounted) return;
 
-    const leafletMap = L.map("map", {
-      minZoom: 2,
-      maxZoom: 18,
-      maxBounds: [[-90, -180], [90, 180]],
-      maxBoundsViscosity: 1.0,
-      worldCopyJump: false
-    }).setView([20, 0], 2);
+    const initMap = async () => {
+      const L = (await import("leaflet")).default;
+      const { default: GeoRasterLayer } = await import("georaster-layer-for-leaflet");
+      const { default: parseGeoraster } = await import("georaster");
 
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      noWrap: true,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(leafletMap);
+      window.L = L; // Make Leaflet available globally if needed
 
-    const newLegend = createLegend(selectedData);
-    newLegend.addTo(leafletMap);
-    setLegend(newLegend);
-    setMap(leafletMap);
+      const leafletMap = L.map("map", {
+        minZoom: 2,
+        maxZoom: 18,
+        maxBounds: [[-90, -180], [90, 180]],
+        maxBoundsViscosity: 1.0,
+        worldCopyJump: false
+      }).setView([20, 0], 2);
+
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        noWrap: true,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(leafletMap);
+
+      const newLegend = createLegend(L, selectedData);
+      newLegend.addTo(leafletMap);
+      setLegend(newLegend);
+      setMap(leafletMap);
+
+      window.parseGeoraster = parseGeoraster;
+      window.GeoRasterLayer = GeoRasterLayer;
+    };
+
+    initMap();
 
     return () => {
-      leafletMap.remove();
+      if (map) {
+        map.remove();
+      }
     };
   }, [isMounted]);
 
-  const createLegend = (dataType) => {
+  const createLegend = (L, dataType) => {
     const legend = L.control({ position: 'bottomright' });
 
     legend.onAdd = function () {
@@ -108,8 +122,8 @@ export default function MapComponent() {
       unit.style.fontWeight = 'bold';
       unit.style.marginTop = '5px';
       unit.textContent = dataType.includes("VCD") ? '[Pmolec/cm²]' : 
-                         dataType === "JNO2" ? '[1000*1/s]' : 
-                         '[ppbv/hr]';
+                       dataType === "JNO2" ? '[1000*1/s]' : 
+                       '[ppbv/hr]';
 
       div.appendChild(gradient);
       div.appendChild(labels);
@@ -121,6 +135,8 @@ export default function MapComponent() {
   };
 
   const loadGeoTiff = async () => {
+    if (!map || !window.GeoRasterLayer || !window.parseGeoraster) return;
+
     const monthNum = monthToNumber[selectedMonth];
     const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
     const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
@@ -130,11 +146,11 @@ export default function MapComponent() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const arrayBuffer = await response.arrayBuffer();
-      const georaster = await parseGeoraster(arrayBuffer);
+      const georaster = await window.parseGeoraster(arrayBuffer);
 
       if (rasterLayer) map.removeLayer(rasterLayer);
 
-      const layer = new GeoRasterLayer({
+      const layer = new window.GeoRasterLayer({
         georaster,
         opacity: 0.6,
         resolution: 256,
@@ -150,7 +166,8 @@ export default function MapComponent() {
       setRasterLayer(layer);
 
       if (legend) map.removeControl(legend);
-      const newLegend = createLegend(selectedData);
+      const L = (await import("leaflet")).default;
+      const newLegend = createLegend(L, selectedData);
       newLegend.addTo(map);
       setLegend(newLegend);
 
