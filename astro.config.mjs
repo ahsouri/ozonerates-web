@@ -9,7 +9,7 @@ import react from '@astrojs/react';
 export default defineConfig({
   site: "https://www.ozonerates.space",
   image: {
-    domains: ["images.unsplash.com"],
+    domains: ["images.unsplash.com", "https://server.arcgisonline.com"],
   },
   prefetch: true,
   vite: {
