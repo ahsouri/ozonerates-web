@@ -55,6 +55,14 @@ export default function MapComponent() {
   const [legend, setLegend] = useState(null);
 
   useEffect(() => {
+
+    const loadLibraries = async () => {
+        const { default: GeoRasterLayer } = await import('georaster-layer-for-leaflet');
+        const { parseGeoraster } = await import('georaster');
+        // Store these in state or ref for later use
+      };
+      loadLibraries();
+
     const newMap = L.map("map", {
       minZoom: 2,
       maxZoom: 18,
@@ -62,6 +70,8 @@ export default function MapComponent() {
       maxBoundsViscosity: 1.0,
       worldCopyJump: false
     }).setView([20, 0], 2);
+
+    
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       noWrap: true,
@@ -138,8 +148,8 @@ export default function MapComponent() {
       if (isNO2VCD) {
         labels.innerHTML = `
           <span>-1.0</span>
-          <span>5.0</span>
-          <span>11.0</span>
+          <span>5.5</span>
+          <span>12.0</span>
         `;
       }
       if (isHCHOVCD) {
