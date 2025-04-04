@@ -251,6 +251,10 @@ export default function MapComponent() {
       console.error("Error loading GeoTIFF:", error);
       alert(`Failed to load GeoTIFF: ${error.message}`);
     }
+    console.log("map:", map);
+console.log("geoLibsLoaded:", geoLibsLoaded);
+console.log("window._georaster:", window._georaster);
+console.log("window._georasterLayer:", window._georasterLayer);
   };
 
   if (!isMounted) {
@@ -311,24 +315,24 @@ export default function MapComponent() {
         </select>
 
         <button 
-          onClick={loadGeoTiff} 
-          style={{ 
-            marginLeft: "20px", 
-            padding: "10px 20px", 
-            backgroundColor: "purple", 
-            color: "white", 
-            border: "none", 
-            borderRadius: "20px", 
-            cursor: "pointer", 
-            fontSize: "16px", 
-            transition: "0.3s ease-in-out", 
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)" 
-          }}
-          onMouseOver={(e) => e.target.style.backgroundColor = "#800080"}
-          onMouseOut={(e) => e.target.style.backgroundColor = "purple"}
-        >
-          Load The Map
-        </button>
+  onClick={loadGeoTiff}
+  disabled={!map || !geoLibsLoaded}
+  style={{ 
+    marginLeft: "20px", 
+    padding: "10px 20px", 
+    backgroundColor: (!map || !geoLibsLoaded) ? "gray" : "purple",
+    color: "white", 
+    border: "none", 
+    borderRadius: "20px", 
+    cursor: (!map || !geoLibsLoaded) ? "not-allowed" : "pointer", 
+    fontSize: "16px", 
+    transition: "0.3s ease-in-out", 
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)" 
+  }}
+>
+  {(!map || !geoLibsLoaded) ? "Loading Map..." : "Load The Map"}
+</button>
+
       </div>
     </div>
   );
