@@ -130,10 +130,17 @@ export default function MapComponent() {
 
     try {
       const L = (await import("leaflet")).default;
-      const { default: parseGeoraster } = await import("georaster");
-      const GeoRasterModule = await import("georaster-layer-for-leaflet");
-      const GeoRasterLayer = GeoRasterModule.default;
       
+      // CHANGED: Load georaster and its layer plugin together using Promise.all
+      const [georasterModule, georasterLayerModule] = await Promise.all([
+      import("georaster"),
+      import("georaster-layer-for-leaflet")
+      ]);
+    
+      const parseGeoraster = georasterModule.default;
+      const GeoRasterLayer = georasterLayerModule.default;
+
+      // NEW: Temporary fix for initialization issue
       if (!window.L) window.L = L;
       if (!window.parseGeoraster) window.parseGeoraster = parseGeoraster;
 
@@ -164,8 +171,14 @@ export default function MapComponent() {
         }
       });
 
+    // NEW: Error handling for layer addition
+    try {
       layer.addTo(map);
       setRasterLayer(layer);
+    } catch (e) {
+      console.error("Layer addition error:", e);
+      throw new Error("Failed to add layer to map");
+    }
 
       if (legend) map.removeControl(legend);
       const newLegend = createLegend(L, selectedData);
