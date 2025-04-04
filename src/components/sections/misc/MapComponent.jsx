@@ -131,7 +131,11 @@ export default function MapComponent() {
     try {
       const L = (await import("leaflet")).default;
       const { default: parseGeoraster } = await import("georaster");
-      const { default: GeoRasterLayer } = await import("georaster-layer-for-leaflet");
+      const GeoRasterModule = await import("georaster-layer-for-leaflet");
+      const GeoRasterLayer = GeoRasterModule.default;
+      
+      if (!window.L) window.L = L;
+      if (!window.parseGeoraster) window.parseGeoraster = parseGeoraster;
 
       const monthNum = monthToNumber[selectedMonth];
       const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
@@ -143,10 +147,13 @@ export default function MapComponent() {
       const arrayBuffer = await response.arrayBuffer();
       const georaster = await parseGeoraster(arrayBuffer);
 
-      if (rasterLayer) map.removeLayer(rasterLayer);
+      if (rasterLayer) {
+        map.removeLayer(rasterLayer);
+        setRasterLayer(null);
+      }
 
       const layer = new GeoRasterLayer({
-        georaster,
+        georaster: georaster,
         opacity: 0.6,
         resolution: 256,
         pixelValuesToColorFn: values => {
@@ -194,7 +201,7 @@ export default function MapComponent() {
         <label>Year: </label>
         <select 
           value={selectedYear} 
-          onChange={e => setSelectedYear(parseInt(e.target.value))}
+          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
         >
           {years.map(year => <option key={year} value={year}>{year}</option>)}
@@ -203,7 +210,7 @@ export default function MapComponent() {
         <label style={{ marginLeft: "20px" }}>Month: </label>
         <select 
           value={selectedMonth} 
-          onChange={e => setSelectedMonth(e.target.value)}
+          onChange={(e) => setSelectedMonth(e.target.value)}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
         >
           {months.map(month => <option key={month} value={month}>{month}</option>)}
@@ -212,7 +219,7 @@ export default function MapComponent() {
         <label style={{ marginLeft: "20px" }}>Data: </label>
         <select 
           value={selectedData} 
-          onChange={e => setSelectedData(e.target.value)}
+          onChange={(e) => setSelectedData(e.target.value)}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
         >
           {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
@@ -230,8 +237,8 @@ export default function MapComponent() {
             cursor: "pointer",
             transition: "background-color 0.3s"
           }}
-          onMouseOver={e => e.currentTarget.style.backgroundColor = "#6b46c1"}
-          onMouseOut={e => e.currentTarget.style.backgroundColor = "purple"}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#6b46c1"}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "purple"}
         >
           Load The Map
         </button>
