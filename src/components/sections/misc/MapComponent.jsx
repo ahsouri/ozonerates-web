@@ -209,10 +209,15 @@ export default function MapComponent() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
       const arrayBuffer = await response.arrayBuffer();
+     
+      const georasterModule = await import('georaster');
+      const parseGeoraster = georasterModule.default || georasterModule.parseGeoraster;
       
-      // Use the dynamically loaded parseGeoraster function
-      const parseGeoraster = window._georaster.parseGeoraster || window._georaster.default?.parseGeoraster;
-      const georaster = await parseGeoraster(arrayBuffer);
+      if (!parseGeoraster) {
+        throw new Error("parseGeoraster function is missing from the georaster module.");
+      }
+      
+      const georaster = await parseGeoraster(arrayBuffer); // this is what you want
 
       if (rasterLayer) map.removeLayer(rasterLayer);
 
