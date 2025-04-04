@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
@@ -39,23 +38,18 @@ export default function MapComponent() {
   const [map, setMap] = useState(null);
   const [rasterLayer, setRasterLayer] = useState(null);
   const [legend, setLegend] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-    return () => setIsMounted(false);
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isClient) return;
 
     const initMap = async () => {
       const L = (await import("leaflet")).default;
-      const { default: GeoRasterLayer } = await import("georaster-layer-for-leaflet");
-      const { default: parseGeoraster } = await import("georaster");
-
-      window.L = L; // Make Leaflet available globally if needed
-
+      
       const leafletMap = L.map("map", {
         minZoom: 2,
         maxZoom: 18,
@@ -73,9 +67,6 @@ export default function MapComponent() {
       newLegend.addTo(leafletMap);
       setLegend(newLegend);
       setMap(leafletMap);
-
-      window.parseGeoraster = parseGeoraster;
-      window.GeoRasterLayer = GeoRasterLayer;
     };
 
     initMap();
@@ -85,7 +76,7 @@ export default function MapComponent() {
         map.remove();
       }
     };
-  }, [isMounted]);
+  }, [isClient]);
 
   const createLegend = (L, dataType) => {
     const legend = L.control({ position: 'bottomright' });
@@ -135,22 +126,26 @@ export default function MapComponent() {
   };
 
   const loadGeoTiff = async () => {
-    if (!map || !window.GeoRasterLayer || !window.parseGeoraster) return;
-
-    const monthNum = monthToNumber[selectedMonth];
-    const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
-    const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
+    if (!map) return;
 
     try {
+      const L = (await import("leaflet")).default;
+      const { default: parseGeoraster } = await import("georaster");
+      const { default: GeoRasterLayer } = await import("georaster-layer-for-leaflet");
+
+      const monthNum = monthToNumber[selectedMonth];
+      const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
+      const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
+
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const arrayBuffer = await response.arrayBuffer();
-      const georaster = await window.parseGeoraster(arrayBuffer);
+      const georaster = await parseGeoraster(arrayBuffer);
 
       if (rasterLayer) map.removeLayer(rasterLayer);
 
-      const layer = new window.GeoRasterLayer({
+      const layer = new GeoRasterLayer({
         georaster,
         opacity: 0.6,
         resolution: 256,
@@ -166,7 +161,6 @@ export default function MapComponent() {
       setRasterLayer(layer);
 
       if (legend) map.removeControl(legend);
-      const L = (await import("leaflet")).default;
       const newLegend = createLegend(L, selectedData);
       newLegend.addTo(map);
       setLegend(newLegend);
@@ -177,12 +171,16 @@ export default function MapComponent() {
     }
   };
 
-  if (!isMounted) {
+  if (!isClient) {
     return (
       <div style={{
-        height: "700px", width: "100%",
-        backgroundColor: "#000", color: "white",
-        display: "flex", justifyContent: "center", alignItems: "center"
+        height: "700px", 
+        width: "100%",
+        backgroundColor: "#000", 
+        color: "white",
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center"
       }}>
         Loading map...
       </div>
@@ -194,29 +192,47 @@ export default function MapComponent() {
       <div id="map" style={{ height: "700px", width: "100%", marginBottom: "20px" }} />
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <label>Year: </label>
-        <select value={selectedYear} onChange={e => setSelectedYear(parseInt(e.target.value))}>
+        <select 
+          value={selectedYear} 
+          onChange={e => setSelectedYear(parseInt(e.target.value))}
+          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+        >
           {years.map(year => <option key={year} value={year}>{year}</option>)}
         </select>
 
         <label style={{ marginLeft: "20px" }}>Month: </label>
-        <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)}>
+        <select 
+          value={selectedMonth} 
+          onChange={e => setSelectedMonth(e.target.value)}
+          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+        >
           {months.map(month => <option key={month} value={month}>{month}</option>)}
         </select>
 
         <label style={{ marginLeft: "20px" }}>Data: </label>
-        <select value={selectedData} onChange={e => setSelectedData(e.target.value)}>
+        <select 
+          value={selectedData} 
+          onChange={e => setSelectedData(e.target.value)}
+          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+        >
           {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
         </select>
 
-        <button onClick={loadGeoTiff} style={{
-          marginLeft: "20px",
-          padding: "10px 20px",
-          backgroundColor: "purple",
-          color: "white",
-          border: "none",
-          borderRadius: "20px",
-          cursor: "pointer"
-        }}>
+        <button 
+          onClick={loadGeoTiff} 
+          style={{
+            marginLeft: "20px",
+            padding: "10px 20px",
+            backgroundColor: "purple",
+            color: "white",
+            border: "none",
+            borderRadius: "20px",
+            cursor: "pointer",
+            transition: "background-color 0.3s"
+          }}
+          onMouseOver={e => e.currentTarget.style.backgroundColor = "#6b46c1"}
+          onMouseOut={e => e.currentTarget.style.backgroundColor = "purple"}
+        >
           Load The Map
         </button>
       </div>
