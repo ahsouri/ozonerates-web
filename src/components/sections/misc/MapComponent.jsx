@@ -1,8 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
 import L from "leaflet";
-import parseGeoraster from "georaster";
-import GeoRasterLayer from "georaster-layer-for-leaflet";
 import "leaflet/dist/leaflet.css";
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
@@ -53,31 +51,16 @@ export default function MapComponent() {
   const [map, setMap] = useState(null);
   const [rasterLayer, setRasterLayer] = useState(null);
   const [legend, setLegend] = useState(null);
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Add this useEffect to handle library loading
   useEffect(() => {
-    setIsClient(true);
-    const loadLibraries = async () => {
-      try {
-        // Store the original references
-        window._L = L;
-        
-        // Dynamically import the problematic libraries
-        const georaster = await import('georaster');
-        const GeoRasterLayer = await import('georaster-layer-for-leaflet');
-        
-        // Make them available globally
-        window._parseGeoraster = georaster.parseGeoraster || georaster.default?.parseGeoraster;
-        window._GeoRasterLayer = GeoRasterLayer.default || GeoRasterLayer;
-      } catch (error) {
-        console.error("Error loading libraries:", error);
-      }
-    };
-    loadLibraries();
+    setIsMounted(true);
+    return () => setIsMounted(false);
   }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+
     const newMap = L.map("map", {
       minZoom: 2,
       maxZoom: 18,
@@ -101,15 +84,15 @@ export default function MapComponent() {
     return () => {
       newMap.remove();
     };
-  }, []);
+  }, [isMounted]);
 
   const createLegend = (dataType) => {
     const isNO2OrHCHO = dataType === "NO2 PBL mixing ratios" || dataType === "HCHO PBL mixing ratios";
-    const isNO2VCD = dataType === "HCHO VCDs" 
+    const isNO2VCD = dataType === "HCHO VCDs";
     const isHCHOVCD = dataType === "NO2 VCDs";
     const isJNO2 = dataType === "JNO2";
-    const isPO3 =  dataType === "PO3";
-    const isPO3sens = dataType === "Sens. to NOx" || dataType === "Sens. to VOC" 
+    const isPO3 = dataType === "PO3";
+    const isPO3sens = dataType === "Sens. to NOx" || dataType === "Sens. to VOC";
     
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function() {
@@ -201,27 +184,26 @@ export default function MapComponent() {
   };
 
   const loadGeoTiff = async () => {
-    if (!map || !window._parseGeoraster || !window._GeoRasterLayer) return;
+    if (!map || !isMounted) return;
 
     const monthNumber = monthToNumber[selectedMonth];
-    let fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNumber}.tif`;
-    
+    const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNumber}.tif`;
     const geoTiffUrl = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
     
-    console.log('Loading GeoTIFF from:', geoTiffUrl);
-    
     try {
+      // Dynamically import when needed
+      const { parseGeoraster } = await import('georaster');
+      const { default: GeoRasterLayer } = await import('georaster-layer-for-leaflet');
+
       const response = await fetch(geoTiffUrl);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
       const arrayBuffer = await response.arrayBuffer();
-      const georaster = await window._parseGeoraster(arrayBuffer);
+      const georaster = await parseGeoraster(arrayBuffer);
 
-      if (rasterLayer) {
-        map.removeLayer(rasterLayer);
-      }
+      if (rasterLayer) map.removeLayer(rasterLayer);
 
-      const layer = new window._GeoRasterLayer({
+      const layer = new GeoRasterLayer({
         georaster,
         opacity: 0.60,
         pixelValuesToColorFn: values => {
@@ -240,9 +222,7 @@ export default function MapComponent() {
       layer.addTo(map);
       setRasterLayer(layer);
 
-      if (legend) {
-        map.removeControl(legend);
-      }
+      if (legend) map.removeControl(legend);
       const newLegend = createLegend(selectedData);
       newLegend.addTo(map);
       setLegend(newLegend);
@@ -252,6 +232,23 @@ export default function MapComponent() {
       alert(`Failed to load GeoTIFF: ${error.message}`);
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div style={{ 
+        height: "700px", 
+        width: "100%", 
+        marginBottom: "20px",
+        backgroundColor: "#000",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "white"
+      }}>
+        Loading map...
+      </div>
+    );
+  }
 
   return (
     <div>
