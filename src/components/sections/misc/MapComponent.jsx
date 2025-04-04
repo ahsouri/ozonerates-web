@@ -98,7 +98,8 @@ export default function MapComponent() {
       labels.style.color = '#333';
 
       if (dataType.includes("PBL")) labels.innerHTML = `<span>-1.0</span><span>2.0</span><span>5.0</span>`;
-      else if (dataType.includes("VCD")) labels.innerHTML = `<span>-1.0</span><span>5.5</span><span>12.0</span>`;
+      else if (dataType.includes("NO2 VCD")) labels.innerHTML = `<span>-1.0</span><span>5.5</span><span>12.0</span>`;
+      else if (dataType.includes("HCHO VCD")) labels.innerHTML = `<span>-1.0</span><span>19.5</span><span>40.0</span>`;
       else if (dataType === "JNO2") labels.innerHTML = `<span>5</span><span>12.5</span><span>20</span>`;
       else labels.innerHTML = `<span>-4.0</span><span>2.0</span><span>8.0</span>`;
 
