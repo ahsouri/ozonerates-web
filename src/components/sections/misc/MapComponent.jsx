@@ -39,6 +39,7 @@ export default function MapComponent() {
   const [rasterLayer, setRasterLayer] = useState(null);
   const [legend, setLegend] = useState(null);
   const [isClient, setIsClient] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -127,67 +128,84 @@ export default function MapComponent() {
 
   const loadGeoTiff = async () => {
     if (!map) return;
-
+    
+    setIsLoading(true);
+    
     try {
       const L = (await import("leaflet")).default;
       
-      // CHANGED: Load georaster and its layer plugin together using Promise.all
+      // Dynamically import georaster libraries
       const [georasterModule, georasterLayerModule] = await Promise.all([
-      import("georaster"),
-      import("georaster-layer-for-leaflet")
+        import("georaster"),
+        import("georaster-layer-for-leaflet")
       ]);
-    
+      
       const parseGeoraster = georasterModule.default;
       const GeoRasterLayer = georasterLayerModule.default;
-
-      // NEW: Temporary fix for initialization issue
-      if (!window.L) window.L = L;
-      if (!window.parseGeoraster) window.parseGeoraster = parseGeoraster;
 
       const monthNum = monthToNumber[selectedMonth];
       const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
       const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
 
+      // Fetch and parse the GeoTIFF
       const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
+      if (!response.ok) throw new Error(`Failed to fetch GeoTIFF: ${response.statusText}`);
+      
       const arrayBuffer = await response.arrayBuffer();
       const georaster = await parseGeoraster(arrayBuffer);
 
+      // Remove existing layer if present
       if (rasterLayer) {
         map.removeLayer(rasterLayer);
         setRasterLayer(null);
       }
 
+      // Create new raster layer with proper color mapping
       const layer = new GeoRasterLayer({
         georaster: georaster,
-        opacity: 0.6,
+        opacity: 0.7,
         resolution: 256,
         pixelValuesToColorFn: values => {
-          const [red, green, blue] = values;
-          return (blue < 132 && red === 0.0 && green === 0.0)
-            ? "rgba(0, 0, 0, 0)"
-            : `rgb(${red},${green},${blue})`;
+          if (!values || values.length === 0) return 'rgba(0, 0, 0, 0)';
+          
+          // For single-band rasters
+          if (values.length === 1) {
+            const value = values[0];
+            if (value === 0 || value === -9999) return 'rgba(0, 0, 0, 0)';
+            
+            // Normalize value to jetColors index
+            const normalized = Math.min(Math.max(value, 0), 255);
+            const index = Math.floor((normalized / 255) * (jetColors.length - 1));
+            const [r, g, b] = jetColors[index];
+            return `rgb(${r},${g},${b})`;
+          }
+          
+          // For RGB rasters
+          const [r, g, b] = values;
+          return (b < 132 && r === 0 && g === 0) 
+            ? 'rgba(0, 0, 0, 0)' 
+            : `rgb(${r},${g},${b})`;
         }
       });
 
-    // NEW: Error handling for layer addition
-    try {
+      // Add layer to map
       layer.addTo(map);
       setRasterLayer(layer);
-    } catch (e) {
-      console.error("Layer addition error:", e);
-      throw new Error("Failed to add layer to map");
-    }
 
+      // Update legend
       if (legend) map.removeControl(legend);
       const newLegend = createLegend(L, selectedData);
       newLegend.addTo(map);
       setLegend(newLegend);
 
+      // Fit bounds to the raster extent
+      map.fitBounds(layer.getBounds());
+
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
-      alert(`Failed to load GeoTIFF: ${error.message}`);
+      alert(`Error loading map: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -216,6 +234,7 @@ export default function MapComponent() {
           value={selectedYear} 
           onChange={(e) => setSelectedYear(parseInt(e.target.value))}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+          disabled={isLoading}
         >
           {years.map(year => <option key={year} value={year}>{year}</option>)}
         </select>
@@ -225,6 +244,7 @@ export default function MapComponent() {
           value={selectedMonth} 
           onChange={(e) => setSelectedMonth(e.target.value)}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+          disabled={isLoading}
         >
           {months.map(month => <option key={month} value={month}>{month}</option>)}
         </select>
@@ -234,26 +254,28 @@ export default function MapComponent() {
           value={selectedData} 
           onChange={(e) => setSelectedData(e.target.value)}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+          disabled={isLoading}
         >
           {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
         </select>
 
         <button 
           onClick={loadGeoTiff} 
+          disabled={isLoading}
           style={{
             marginLeft: "20px",
             padding: "10px 20px",
-            backgroundColor: "purple",
+            backgroundColor: isLoading ? "#cccccc" : "purple",
             color: "white",
             border: "none",
             borderRadius: "20px",
-            cursor: "pointer",
+            cursor: isLoading ? "not-allowed" : "pointer",
             transition: "background-color 0.3s"
           }}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#6b46c1"}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "purple"}
+          onMouseOver={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "#6b46c1")}
+          onMouseOut={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "purple")}
         >
-          Load The Map
+          {isLoading ? "Loading..." : "Load The Map"}
         </button>
       </div>
     </div>
