@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState, useRef } from "react";
+import maplibre from 'maplibre-gl';
+import GeoTIFF from 'geotiff';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Your original constants
@@ -32,53 +33,153 @@ const jetColors = [
   [255, 16, 0], [255, 0, 0], [239, 0, 0], [223, 0, 0], [207, 0, 0], [191, 0, 0]
 ];
 
-export default function MapComponent() {
-  const [selectedYear, setSelectedYear] = useState(2019);
-  const [selectedMonth, setSelectedMonth] = useState("Jul");
-  const [selectedData, setSelectedData] = useState("PO3");
-  const [isLoading, setIsLoading] = useState(false);
-  const [map, setMap] = useState(null);
-  const mapContainer = useRef(null);
-  const legendRef = useRef(null);
+document.addEventListener('DOMContentLoaded', () => {
+  // State variables
+  let selectedYear = 2019;
+  let selectedMonth = "Jul";
+  let selectedData = "PO3";
+  let isLoading = false;
+  let map = null;
+  const mapContainer = document.createElement('div');
+  const legendRef = document.createElement('div');
 
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainer.current) return;
+  // Create the UI
+  function createUI() {
+    const container = document.createElement('div');
+    
+    // Map container setup
+    mapContainer.style.height = "700px";
+    mapContainer.style.width = "100%";
+    mapContainer.style.marginBottom = "20px";
+    mapContainer.style.position = 'relative';
+    
+    // Legend setup
+    legendRef.style.position = 'absolute';
+    legendRef.style.bottom = '20px';
+    legendRef.style.right = '20px';
+    legendRef.style.zIndex = '1';
+    mapContainer.appendChild(legendRef);
+    
+    // Controls container
+    const controls = document.createElement('div');
+    controls.style.textAlign = "center";
+    controls.style.marginBottom = "20px";
+    
+    // Year select
+    const yearLabel = document.createElement('label');
+    yearLabel.textContent = "Year: ";
+    const yearSelect = document.createElement('select');
+    yearSelect.value = selectedYear;
+    yearSelect.style.padding = "8px";
+    yearSelect.style.borderRadius = "4px";
+    yearSelect.style.border = "1px solid #ccc";
+    yearSelect.disabled = isLoading;
+    years.forEach(year => {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    });
+    yearSelect.addEventListener('change', (e) => {
+      selectedYear = parseInt(e.target.value);
+    });
+    
+    // Month select
+    const monthLabel = document.createElement('label');
+    monthLabel.textContent = "Month: ";
+    monthLabel.style.marginLeft = "20px";
+    const monthSelect = document.createElement('select');
+    monthSelect.value = selectedMonth;
+    monthSelect.style.padding = "8px";
+    monthSelect.style.borderRadius = "4px";
+    monthSelect.style.border = "1px solid #ccc";
+    monthSelect.disabled = isLoading;
+    months.forEach(month => {
+      const option = document.createElement('option');
+      option.value = month;
+      option.textContent = month;
+      monthSelect.appendChild(option);
+    });
+    monthSelect.addEventListener('change', (e) => {
+      selectedMonth = e.target.value;
+    });
+    
+    // Data select
+    const dataLabel = document.createElement('label');
+    dataLabel.textContent = "Data: ";
+    dataLabel.style.marginLeft = "20px";
+    const dataSelect = document.createElement('select');
+    dataSelect.value = selectedData;
+    dataSelect.style.padding = "8px";
+    dataSelect.style.borderRadius = "4px";
+    dataSelect.style.border = "1px solid #ccc";
+    dataSelect.disabled = isLoading;
+    Object.keys(dataFields).forEach(d => {
+      const option = document.createElement('option');
+      option.value = d;
+      option.textContent = d;
+      dataSelect.appendChild(option);
+    });
+    dataSelect.addEventListener('change', (e) => {
+      selectedData = e.target.value;
+      updateLegend();
+    });
+    
+    // Load button
+    const loadButton = document.createElement('button');
+    loadButton.textContent = isLoading ? "Loading..." : "Load The Map";
+    loadButton.style.marginLeft = "20px";
+    loadButton.style.padding = "10px 20px";
+    loadButton.style.backgroundColor = isLoading ? "#cccccc" : "purple";
+    loadButton.style.color = "white";
+    loadButton.style.border = "none";
+    loadButton.style.borderRadius = "20px";
+    loadButton.style.cursor = isLoading ? "not-allowed" : "pointer";
+    loadButton.style.transition = "background-color 0.3s";
+    loadButton.addEventListener('mouseover', (e) => {
+      if (!isLoading) e.currentTarget.style.backgroundColor = "#6b46c1";
+    });
+    loadButton.addEventListener('mouseout', (e) => {
+      if (!isLoading) e.currentTarget.style.backgroundColor = "purple";
+    });
+    loadButton.addEventListener('click', loadGeoTiff);
+    
+    // Assemble controls
+    controls.appendChild(yearLabel);
+    controls.appendChild(yearSelect);
+    controls.appendChild(monthLabel);
+    controls.appendChild(monthSelect);
+    controls.appendChild(dataLabel);
+    controls.appendChild(dataSelect);
+    controls.appendChild(loadButton);
+    
+    // Assemble main container
+    container.appendChild(mapContainer);
+    container.appendChild(controls);
+    
+    document.body.appendChild(container);
+    
+    // Initialize map
+    initMap();
+  }
 
-    const initializeMap = async () => {
-      const maplibre = await import('maplibre-gl');
-      const geotiff = await import('geotiff');
-      
-      const map = new maplibre.Map({
-        container: mapContainer.current,
-        style: 'https://demotiles.maplibre.org/style.json', // Default style
-        center: [0, 20],
-        zoom: 2,
-        minZoom: 2,
-        maxZoom: 18,
-        maxBounds: [[-180, -90], [180, 90]]
-      });
-
-      map.on('load', () => {
-        setMap(map);
-        updateLegend();
-      });
-
-      return () => map.remove();
-    };
-
-    initializeMap();
-  }, []);
+  // Initialize the map
+  function initMap() {
+    map = new maplibre.Map({
+      container: mapContainer,
+      style: 'https://demotiles.maplibre.org/style.json', // default style
+      center: [0, 20],
+      zoom: 2
+    });
+  }
 
   // Load GeoTIFF function
-  const loadGeoTiff = async () => {
+  async function loadGeoTiff() {
     if (!map) return;
-    setIsLoading(true);
+    isLoading = true;
+    updateButtonState();
 
     try {
-      const maplibre = await import('maplibre-gl');
-      const GeoTIFF = await import('geotiff');
-      
       const monthNum = monthToNumber[selectedMonth];
       const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
       const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
@@ -156,12 +257,26 @@ export default function MapComponent() {
       console.error("Error loading GeoTIFF:", error);
       alert(`Error loading map: ${error.message}`);
     } finally {
-      setIsLoading(false);
+      isLoading = false;
+      updateButtonState();
     }
-  };
+  }
 
-  const updateLegend = () => {
-    if (!legendRef.current) return;
+  function updateButtonState() {
+    const buttons = document.querySelectorAll('select, button');
+    buttons.forEach(button => {
+      button.disabled = isLoading;
+    });
+    const loadButton = document.querySelector('button');
+    if (loadButton) {
+      loadButton.textContent = isLoading ? "Loading..." : "Load The Map";
+      loadButton.style.backgroundColor = isLoading ? "#cccccc" : "purple";
+      loadButton.style.cursor = isLoading ? "not-allowed" : "pointer";
+    }
+  }
+
+  function updateLegend() {
+    if (!legendRef) return;
   
     let min, mid, max;
     if (selectedData.includes("PBL")) {
@@ -184,7 +299,7 @@ export default function MapComponent() {
       `rgb(${c[0]},${c[1]},${c[2]}) ${(i / (jetColors.length - 1)) * 100}%`
     ).join(', ');
   
-    legendRef.current.innerHTML = `
+    legendRef.innerHTML = `
       <div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); border: 1px solid #ccc">
         <div style="background: linear-gradient(to right, ${gradient}); height: 25px; width: 250px; margin-bottom: 5px;"></div>
         <div style="display: flex; justify-content: space-between; font-size: 12px; color: #333">
@@ -193,86 +308,8 @@ export default function MapComponent() {
         <div style="text-align: center; font-weight: bold; margin-top: 5px">${unit}</div>
       </div>
     `;
-  };
-  
+  }
 
-  return (
-    <div>
-      <div 
-        ref={mapContainer} 
-        style={{ 
-          height: "700px", 
-          width: "100%", 
-          marginBottom: "20px",
-          position: 'relative'
-        }}
-      >
-        {/* Legend positioned absolutely within map container */}
-        <div 
-          ref={legendRef}
-          style={{
-            position: 'absolute',
-            bottom: '20px',
-            right: '20px',
-            zIndex: 1
-          }}
-        />
-      </div>
-      
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        {/* Your existing controls */}
-        <label>Year: </label>
-        <select 
-          value={selectedYear} 
-          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
-          disabled={isLoading}
-        >
-          {years.map(year => <option key={year} value={year}>{year}</option>)}
-        </select>
-
-        <label style={{ marginLeft: "20px" }}>Month: </label>
-        <select 
-          value={selectedMonth} 
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
-          disabled={isLoading}
-        >
-          {months.map(month => <option key={month} value={month}>{month}</option>)}
-        </select>
-
-        <label style={{ marginLeft: "20px" }}>Data: </label>
-        <select 
-          value={selectedData} 
-          onChange={(e) => {
-            setSelectedData(e.target.value);
-            updateLegend();
-          }}
-          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
-          disabled={isLoading}
-        >
-          {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
-        </select>
-
-        <button 
-          onClick={loadGeoTiff} 
-          disabled={isLoading}
-          style={{
-            marginLeft: "20px",
-            padding: "10px 20px",
-            backgroundColor: isLoading ? "#cccccc" : "purple",
-            color: "white",
-            border: "none",
-            borderRadius: "20px",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            transition: "background-color 0.3s"
-          }}
-          onMouseOver={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "#6b46c1")}
-          onMouseOut={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "purple")}
-        >
-          {isLoading ? "Loading..." : "Load The Map"}
-        </button>
-      </div>
-    </div>
-  );
-}
+  // Initialize the application
+  createUI();
+});
