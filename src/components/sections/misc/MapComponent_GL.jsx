@@ -43,7 +43,7 @@ export default function MapComponent() {
   const [selectedMonth, setSelectedMonth] = useState("Jul");
   const [selectedData, setSelectedData] = useState("PO3");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [mapReady, setMapReady] = useState(false); // Added missing state
   // Initialize map when component mounts
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -131,18 +131,20 @@ export default function MapComponent() {
       const blob = await new Promise(resolve => {
         canvas.toBlob(resolve, 'image/png');
       });
-      const imageUrl = URL.createObjectURL(blob);
       // Add raster source and layer
+      const imageUrl = await new Promise(resolve => {
+      canvas.toBlob(blob => resolve(URL.createObjectURL(blob)), 'image/png');
+      });
       // Add raster source and layer
       mapRef.current.addSource('raster-source', {
         type: 'image',
         url: imageUrl,
         coordinates: [
-          [minX, maxY],
-          [maxX, maxY],
-          [maxX, minY],
-          [minX, minY],
-        ]
+          [minX, maxY], // top-left
+          [maxX, maxY], // top-right
+          [maxX, minY], // bottom-right
+          [minX, minY], // bottom-left
+          ]
       });
 
 
@@ -162,7 +164,12 @@ export default function MapComponent() {
     mapRef.current.on('render', () => {
             URL.revokeObjectURL(imageUrl);
     });
-      
+    // Revoke the object URL after the image is loaded
+    mapRef.current.once('idle', () => {
+        URL.revokeObjectURL(imageUrl);
+    });
+    console.log('Image URL:', url);
+    console.log('Bounding box:', [minX, minY, maxX, maxY]);
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
       alert(`Error loading map: ${error.message}`);
@@ -290,3 +297,5 @@ export default function MapComponent() {
     </div>
   );
 }
+
+
