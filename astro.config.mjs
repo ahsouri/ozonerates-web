@@ -24,8 +24,8 @@ export default defineConfig({
           default-src 'self';
           script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:;
           worker-src 'self' blob:;
-          img-src 'self' data: blob: https://*.tiles.mapbox.com https://demotiles.maplibre.org https://raw.githubusercontent.com;
-          connect-src 'self' data: blob: https://*.tiles.mapbox.com https://demotiles.maplibre.org https://api.web3forms.com https://github.com https://raw.githubusercontent.com blob:;
+          img-src 'self' data: blob: https://www.ozonerates.space https://*.tiles.mapbox.com https://demotiles.maplibre.org https://raw.githubusercontent.com;
+          connect-src 'self' data: blob: https://www.ozonerates.space https://*.tiles.mapbox.com https://demotiles.maplibre.org https://api.web3forms.com https://github.com https://raw.githubusercontent.com blob:;
           style-src 'self' 'unsafe-inline';
           font-src 'self';
         `.replace(/\s+/g, ' '),
