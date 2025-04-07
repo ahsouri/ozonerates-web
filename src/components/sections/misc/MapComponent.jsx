@@ -133,15 +133,14 @@ export default function MapComponent() {
     
     try {
       const L = (await import("leaflet")).default;
-      
-      // Dynamically import georaster libraries
-      const [georasterModule, georasterLayerModule] = await Promise.all([
-        import("georaster"),
-        import("georaster-layer-for-leaflet")
-      ]);
-      
+       // Dynamically import georaster libraries with proper syntax
+      const georasterModule = await import("georaster");
+      const georasterLayerModule = await import("georaster-layer-for-leaflet");
+       
+      // Access the default exports correctly
       const parseGeoraster = georasterModule.default;
       const GeoRasterLayer = georasterLayerModule.default;
+   
 
       const monthNum = monthToNumber[selectedMonth];
       const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
