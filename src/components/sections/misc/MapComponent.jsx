@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
-import "leaflet/dist/leaflet.css";
-
+import('leaflet/dist/leaflet.css');
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dataFields = {
@@ -153,6 +152,8 @@ export default function MapComponent() {
       const arrayBuffer = await response.arrayBuffer();
       const georaster = await parseGeoraster(arrayBuffer);
 
+      console.log("georasterModule:", georasterModule);
+      console.log("georasterLayerModule:", georasterLayerModule);
       // Remove existing layer if present
       if (rasterLayer) {
         map.removeLayer(rasterLayer);
