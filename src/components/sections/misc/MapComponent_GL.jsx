@@ -4,7 +4,7 @@ import maplibre from 'maplibre-gl';
 import { fromArrayBuffer } from 'geotiff';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Constants
+// Constants (same as before)
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dataFields = {
@@ -53,13 +53,7 @@ export default function MapComponent() {
       style: 'https://demotiles.maplibre.org/style.json',
       center: [0, 20],
       zoom: 2,
-      attributionControl: false,
-      transformRequest: (url) => {
-        if (url.startsWith('http')) {
-          return { url };
-        }
-        return { url: `https://www.ozonerates.space${url}` };
-      }
+      attributionControl: false
     });
 
     map.on('load', () => {
@@ -77,7 +71,7 @@ export default function MapComponent() {
 
   const loadGeoTiff = async () => {
     if (!mapRef.current || !isMapReady) {
-      console.error("Map not ready or not initialized");
+      console.log("Map not ready yet");
       return;
     }
     setIsLoading(true);
@@ -86,6 +80,7 @@ export default function MapComponent() {
       const monthNum = monthToNumber[selectedMonth];
       const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
       const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
+      console.log("Loading:", url);
 
       // Remove existing layer if it exists
       if (mapRef.current.getLayer('raster-layer')) {
@@ -95,11 +90,13 @@ export default function MapComponent() {
 
       // Fetch and parse GeoTIFF
       const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const arrayBuffer = await response.arrayBuffer();
       const tiff = await fromArrayBuffer(arrayBuffer);
       const image = await tiff.getImage();
       const [minX, minY, maxX, maxY] = image.getBoundingBox();
       const rasterData = await image.readRasters();
+      console.log("GeoTIFF loaded with bounds:", {minX, minY, maxX, maxY});
 
       // Create canvas for the raster
       const canvas = document.createElement('canvas');
@@ -108,39 +105,50 @@ export default function MapComponent() {
       const ctx = canvas.getContext('2d');
       const imageData = ctx.createImageData(rasterData.width, rasterData.height);
 
-      // Apply jet color scale
+      // Find min/max values for normalization
+      let minVal = Infinity;
+      let maxVal = -Infinity;
+      for (let i = 0; i < rasterData[0].length; i++) {
+        const val = rasterData[0][i];
+        if (val !== 0 && val !== -9999) {
+          minVal = Math.min(minVal, val);
+          maxVal = Math.max(maxVal, val);
+        }
+      }
+      console.log("Data range:", minVal, maxVal);
+
+      // Apply jet color scale with proper normalization
       for (let i = 0; i < rasterData[0].length; i++) {
         const value = rasterData[0][i];
         if (value === 0 || value === -9999) {
-          imageData.data[i * 4 + 3] = 0;
+          imageData.data[i * 4 + 3] = 0; // Transparent for no data
           continue;
         }
 
-        const normalized = Math.min(Math.max(value, 0), 255);
-        const index = Math.floor((normalized / 255) * (jetColors.length - 1));
+        // Normalize value to 0-255 based on actual data range
+        const normalized = Math.floor(((value - minVal) / (maxVal - minVal)) * 255);
+        const index = Math.min(Math.floor((normalized / 255) * (jetColors.length - 1)), jetColors.length - 1);
         const [r, g, b] = jetColors[index];
         
         imageData.data[i * 4] = r;
         imageData.data[i * 4 + 1] = g;
         imageData.data[i * 4 + 2] = b;
-        imageData.data[i * 4 + 3] = 178;
+        imageData.data[i * 4 + 3] = 178; // ~70% opacity
       }
 
       ctx.putImageData(imageData, 0, 0);
-      const blob = await new Promise(resolve => {
-        canvas.toBlob(resolve, 'image/png');
-      });
-      const imageUrl = URL.createObjectURL(blob);
+      const imageUrl = canvas.toDataURL('image/png');
+      console.log("Image URL created");
 
       // Add raster source and layer
       mapRef.current.addSource('raster-source', {
         type: 'image',
         url: imageUrl,
         coordinates: [
-          [minX, maxY],
-          [maxX, maxY],
-          [maxX, minY],
-          [minX, minY],
+          [minX, maxY], // top-left
+          [maxX, maxY], // top-right
+          [maxX, minY], // bottom-right
+          [minX, minY], // bottom-left
         ]
       });
 
@@ -153,14 +161,10 @@ export default function MapComponent() {
         }
       });
 
-      mapRef.current.fitBounds([[minX, minY], [maxX, maxY]]);
+      console.log("Layer added, fitting bounds");
+      mapRef.current.fitBounds([[minX, minY], [maxX, maxY]], { padding: 20 });
       updateLegend();
 
-      // Clean up the object URL when done
-      mapRef.current.once('render', () => {
-        URL.revokeObjectURL(imageUrl);
-      });
-      
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
       alert(`Error loading map: ${error.message}`);
