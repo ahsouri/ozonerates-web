@@ -23,7 +23,7 @@ export default defineConfig({
         "Content-Security-Policy": `
           default-src 'self';
           script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:;
-          worker-src 'self' blob:;
+          worker-src 'self' blob:https://www.ozonerates.space https://demotiles.maplibre.org ;
           img-src 'self' data: blob: https://www.ozonerates.space https://*.tiles.mapbox.com https://demotiles.maplibre.org https://raw.githubusercontent.com;
           connect-src 'self' data: blob: https://www.ozonerates.space https://*.tiles.mapbox.com https://demotiles.maplibre.org https://api.web3forms.com https://github.com https://raw.githubusercontent.com blob:;
           style-src 'self' 'unsafe-inline';
