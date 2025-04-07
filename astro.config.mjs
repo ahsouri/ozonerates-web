@@ -9,24 +9,20 @@ import react from '@astrojs/react';
 export default defineConfig({
   site: "https://www.ozonerates.space",
   image: {
-    domains: ["images.unsplash.com", "https://server.arcgisonline.com"],
+    domains: ["images.unsplash.com", "https://server.arcgisonline.com", "https://demotiles.maplibre.org"],
   },
   prefetch: true,
   vite: {
-    ssr: {
-      // Fix for CommonJS modules
-      external: ['pixel-utils'],
-      noExternal: ['georaster', 'georaster-layer-for-leaflet']
-    },
-    optimizeDeps: {
-      include: ['georaster', 'georaster-layer-for-leaflet', 'pixel-utils'],
-      exclude: ['@astrojs/starlight'] // Keep Starlight optimization
-    },
     build: {
       commonjsOptions: {
         transformMixedEsModules: true // Handle mixed ESM/CJS
       }
-    }
+    },
+    server: {
+      headers: {
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://demotiles.maplibre.org https://raw.githubusercontent.com; connect-src 'self' https://demotiles.maplibre.org https://api.web3forms.com https://github.com https://raw.githubusercontent.com blob:;"
+      }
+    },
   },
   integrations: [
     tailwind(),

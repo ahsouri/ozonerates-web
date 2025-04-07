@@ -1,9 +1,10 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import maplibre from 'maplibre-gl';
-import GeoTIFF from 'geotiff';
+import { fromArrayBuffer } from 'geotiff';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Your original constants
+// Constants (same as before)
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dataFields = {
@@ -33,151 +34,40 @@ const jetColors = [
   [255, 16, 0], [255, 0, 0], [239, 0, 0], [223, 0, 0], [207, 0, 0], [191, 0, 0]
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
-  // State variables
-  let selectedYear = 2019;
-  let selectedMonth = "Jul";
-  let selectedData = "PO3";
-  let isLoading = false;
-  let map = null;
-  const mapContainer = document.createElement('div');
-  const legendRef = document.createElement('div');
 
-  // Create the UI
-  function createUI() {
-    const container = document.createElement('div');
-    
-    // Map container setup
-    mapContainer.style.height = "700px";
-    mapContainer.style.width = "100%";
-    mapContainer.style.marginBottom = "20px";
-    mapContainer.style.position = 'relative';
-    
-    // Legend setup
-    legendRef.style.position = 'absolute';
-    legendRef.style.bottom = '20px';
-    legendRef.style.right = '20px';
-    legendRef.style.zIndex = '1';
-    mapContainer.appendChild(legendRef);
-    
-    // Controls container
-    const controls = document.createElement('div');
-    controls.style.textAlign = "center";
-    controls.style.marginBottom = "20px";
-    
-    // Year select
-    const yearLabel = document.createElement('label');
-    yearLabel.textContent = "Year: ";
-    const yearSelect = document.createElement('select');
-    yearSelect.value = selectedYear;
-    yearSelect.style.padding = "8px";
-    yearSelect.style.borderRadius = "4px";
-    yearSelect.style.border = "1px solid #ccc";
-    yearSelect.disabled = isLoading;
-    years.forEach(year => {
-      const option = document.createElement('option');
-      option.value = year;
-      option.textContent = year;
-      yearSelect.appendChild(option);
-    });
-    yearSelect.addEventListener('change', (e) => {
-      selectedYear = parseInt(e.target.value);
-    });
-    
-    // Month select
-    const monthLabel = document.createElement('label');
-    monthLabel.textContent = "Month: ";
-    monthLabel.style.marginLeft = "20px";
-    const monthSelect = document.createElement('select');
-    monthSelect.value = selectedMonth;
-    monthSelect.style.padding = "8px";
-    monthSelect.style.borderRadius = "4px";
-    monthSelect.style.border = "1px solid #ccc";
-    monthSelect.disabled = isLoading;
-    months.forEach(month => {
-      const option = document.createElement('option');
-      option.value = month;
-      option.textContent = month;
-      monthSelect.appendChild(option);
-    });
-    monthSelect.addEventListener('change', (e) => {
-      selectedMonth = e.target.value;
-    });
-    
-    // Data select
-    const dataLabel = document.createElement('label');
-    dataLabel.textContent = "Data: ";
-    dataLabel.style.marginLeft = "20px";
-    const dataSelect = document.createElement('select');
-    dataSelect.value = selectedData;
-    dataSelect.style.padding = "8px";
-    dataSelect.style.borderRadius = "4px";
-    dataSelect.style.border = "1px solid #ccc";
-    dataSelect.disabled = isLoading;
-    Object.keys(dataFields).forEach(d => {
-      const option = document.createElement('option');
-      option.value = d;
-      option.textContent = d;
-      dataSelect.appendChild(option);
-    });
-    dataSelect.addEventListener('change', (e) => {
-      selectedData = e.target.value;
-      updateLegend();
-    });
-    
-    // Load button
-    const loadButton = document.createElement('button');
-    loadButton.textContent = isLoading ? "Loading..." : "Load The Map";
-    loadButton.style.marginLeft = "20px";
-    loadButton.style.padding = "10px 20px";
-    loadButton.style.backgroundColor = isLoading ? "#cccccc" : "purple";
-    loadButton.style.color = "white";
-    loadButton.style.border = "none";
-    loadButton.style.borderRadius = "20px";
-    loadButton.style.cursor = isLoading ? "not-allowed" : "pointer";
-    loadButton.style.transition = "background-color 0.3s";
-    loadButton.addEventListener('mouseover', (e) => {
-      if (!isLoading) e.currentTarget.style.backgroundColor = "#6b46c1";
-    });
-    loadButton.addEventListener('mouseout', (e) => {
-      if (!isLoading) e.currentTarget.style.backgroundColor = "purple";
-    });
-    loadButton.addEventListener('click', loadGeoTiff);
-    
-    // Assemble controls
-    controls.appendChild(yearLabel);
-    controls.appendChild(yearSelect);
-    controls.appendChild(monthLabel);
-    controls.appendChild(monthSelect);
-    controls.appendChild(dataLabel);
-    controls.appendChild(dataSelect);
-    controls.appendChild(loadButton);
-    
-    // Assemble main container
-    container.appendChild(mapContainer);
-    container.appendChild(controls);
-    
-    document.body.appendChild(container);
-    
-    // Initialize map
-    initMap();
-  }
+export default function MapComponent() {
+  const mapContainerRef = useRef(null);
+  const legendRef = useRef(null);
+  const mapRef = useRef(null);
+  const [selectedYear, setSelectedYear] = useState(2019);
+  const [selectedMonth, setSelectedMonth] = useState("Jul");
+  const [selectedData, setSelectedData] = useState("PO3");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize the map
-  function initMap() {
-    map = new maplibre.Map({
-      container: mapContainer,
-      style: 'https://demotiles.maplibre.org/style.json', // default style
+  // Initialize map when component mounts
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    const map = new maplibre.Map({
+      container: mapContainerRef.current,
+      style: 'https://demotiles.maplibre.org/style.json',
       center: [0, 20],
       zoom: 2
     });
-  }
 
-  // Load GeoTIFF function
-  async function loadGeoTiff() {
-    if (!map) return;
-    isLoading = true;
-    updateButtonState();
+    mapRef.current = map;
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  const loadGeoTiff = async () => {
+    if (!mapRef.current) return;
+    setIsLoading(true);
 
     try {
       const monthNum = monthToNumber[selectedMonth];
@@ -185,15 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
 
       // Remove existing layer if it exists
-      if (map.getLayer('raster-layer')) {
-        map.removeLayer('raster-layer');
-        map.removeSource('raster-source');
+      if (mapRef.current.getLayer('raster-layer')) {
+        mapRef.current.removeLayer('raster-layer');
+        mapRef.current.removeSource('raster-source');
       }
 
       // Fetch and parse GeoTIFF
       const response = await fetch(url);
       const arrayBuffer = await response.arrayBuffer();
-      const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
+      const tiff = await fromArrayBuffer(arrayBuffer);
       const image = await tiff.getImage();
       const [minX, minY, maxX, maxY] = image.getBoundingBox();
       const rasterData = await image.readRasters();
@@ -209,12 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < rasterData[0].length; i++) {
         const value = rasterData[0][i];
         if (value === 0 || value === -9999) {
-          // Transparent for no data
           imageData.data[i * 4 + 3] = 0;
           continue;
         }
 
-        // Normalize value to jetColors index (adjust scale as needed)
         const normalized = Math.min(Math.max(value, 0), 255);
         const index = Math.floor((normalized / 255) * (jetColors.length - 1));
         const [r, g, b] = jetColors[index];
@@ -222,25 +110,29 @@ document.addEventListener('DOMContentLoaded', () => {
         imageData.data[i * 4] = r;
         imageData.data[i * 4 + 1] = g;
         imageData.data[i * 4 + 2] = b;
-        imageData.data[i * 4 + 3] = 178; // ~70% opacity
+        imageData.data[i * 4 + 3] = 178;
       }
 
       ctx.putImageData(imageData, 0, 0);
-      const imageUrl = canvas.toDataURL();
-
+      const blob = await new Promise(resolve => {
+        canvas.toBlob(resolve, 'image/png');
+      });
+      const imageUrl = URL.createObjectURL(blob);
       // Add raster source and layer
-      map.addSource('raster-source', {
+      // Add raster source and layer
+      mapRef.current.addSource('raster-source', {
         type: 'image',
         url: imageUrl,
         coordinates: [
-          [minX, maxY], // top-left
-          [maxX, maxY], // top-right
-          [maxX, minY], // bottom-right
-          [minX, minY], // bottom-left
+          [minX, maxY],
+          [maxX, maxY],
+          [maxX, minY],
+          [minX, minY],
         ]
       });
 
-      map.addLayer({
+
+      mapRef.current.addLayer({
         id: 'raster-layer',
         type: 'raster',
         source: 'raster-source',
@@ -249,34 +141,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Fit bounds to the raster
-      map.fitBounds([[minX, minY], [maxX, maxY]]);
+      mapRef.current.fitBounds([[minX, minY], [maxX, maxY]]);
       updateLegend();
 
+    // Clean up the object URL when done
+    mapRef.current.on('render', () => {
+            URL.revokeObjectURL(imageUrl);
+    });
+      
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
       alert(`Error loading map: ${error.message}`);
     } finally {
-      isLoading = false;
-      updateButtonState();
+      setIsLoading(false);
     }
-  }
+  };
 
-  function updateButtonState() {
-    const buttons = document.querySelectorAll('select, button');
-    buttons.forEach(button => {
-      button.disabled = isLoading;
-    });
-    const loadButton = document.querySelector('button');
-    if (loadButton) {
-      loadButton.textContent = isLoading ? "Loading..." : "Load The Map";
-      loadButton.style.backgroundColor = isLoading ? "#cccccc" : "purple";
-      loadButton.style.cursor = isLoading ? "not-allowed" : "pointer";
-    }
-  }
-
-  function updateLegend() {
-    if (!legendRef) return;
+  const updateLegend = () => {
+    if (!legendRef.current) return;
   
     let min, mid, max;
     if (selectedData.includes("PBL")) {
@@ -299,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `rgb(${c[0]},${c[1]},${c[2]}) ${(i / (jetColors.length - 1)) * 100}%`
     ).join(', ');
   
-    legendRef.innerHTML = `
+    legendRef.current.innerHTML = `
       <div style="background: white; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); border: 1px solid #ccc">
         <div style="background: linear-gradient(to right, ${gradient}); height: 25px; width: 250px; margin-bottom: 5px;"></div>
         <div style="display: flex; justify-content: space-between; font-size: 12px; color: #333">
@@ -308,8 +190,89 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="text-align: center; font-weight: bold; margin-top: 5px">${unit}</div>
       </div>
     `;
-  }
+  };
 
-  // Initialize the application
-  createUI();
-});
+  return (
+    <div className="w-full">
+      <div 
+        ref={mapContainerRef} 
+        style={{ 
+          height: "700px", 
+          width: "100%", 
+          marginBottom: "20px",
+          position: 'relative'
+        }}
+      >
+        <div 
+          ref={legendRef}
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 1
+          }}
+        />
+      </div>
+      
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <label>Year: </label>
+        <select 
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+          disabled={isLoading}
+        >
+          {years.map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+
+        <label style={{ marginLeft: "20px" }}>Month: </label>
+        <select 
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+          disabled={isLoading}
+        >
+          {months.map(month => (
+            <option key={month} value={month}>{month}</option>
+          ))}
+        </select>
+
+        <label style={{ marginLeft: "20px" }}>Data: </label>
+        <select 
+          value={selectedData}
+          onChange={(e) => {
+            setSelectedData(e.target.value);
+            updateLegend();
+          }}
+          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+          disabled={isLoading}
+        >
+          {Object.keys(dataFields).map(d => (
+            <option key={d} value={d}>{d}</option>
+          ))}
+        </select>
+
+        <button 
+          onClick={loadGeoTiff}
+          disabled={isLoading}
+          style={{
+            marginLeft: "20px",
+            padding: "10px 20px",
+            backgroundColor: isLoading ? "#cccccc" : "purple",
+            color: "white",
+            border: "none",
+            borderRadius: "20px",
+            cursor: isLoading ? "not-allowed" : "pointer",
+            transition: "background-color 0.3s"
+          }}
+          onMouseOver={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "#6b46c1")}
+          onMouseOut={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "purple")}
+        >
+          {isLoading ? "Loading..." : "Load The Map"}
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -2,9 +2,9 @@
 // Import the necessary components
 import MainLayout from "@/layouts/MainLayout.astro";
 import { SITE } from "@data/constants";
-import MapComponent from "@components/sections/misc/MapComponent_GL.jsx";
 const pageTitle: string = `Maps | ${SITE.title}`;
 import { twMerge } from 'tailwind-merge';
+import MapComponent from "@/components/sections/misc/MapComponent_GL";
 ---
 
 <!--Utilizing MainLayout for the outer layout of the page, and defining meta for SEO purposes-->
@@ -30,5 +30,5 @@ import { twMerge } from 'tailwind-merge';
     Discover high-resolution datasets, including PO3, ozone sensitivity maps, photolysis rates, and the abundance of HCHO and NO₂, spanning from 2018 to 2023 at ~10x10 km2.
   </p>
 </div>
-<MapComponent client:load/>
+<MapComponent client:load />
 </MainLayout>
