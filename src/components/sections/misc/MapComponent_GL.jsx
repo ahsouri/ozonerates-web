@@ -48,6 +48,7 @@ export default function MapComponent() {
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+
     const map = new maplibre.Map({
       container: mapContainerRef.current,
       style: 'https://demotiles.maplibre.org/style.json',
@@ -55,13 +56,18 @@ export default function MapComponent() {
       zoom: 2,
       attributionControl: false,
       transformRequest: (url) => {
+        // Skip transformation for blob URLs
+        if (url.startsWith('blob:')) {
+          return { url }; // Return blob URLs as-is
+        }
+        // Your existing transformation for other URLs
         if (url.startsWith('http')) {
           return { url };
         }
         return { url: `https://www.ozonerates.space${url}` };
       }
     });
-
+    
     map.on('load', () => {
       setMapReady(true);
       mapRef.current = map;
