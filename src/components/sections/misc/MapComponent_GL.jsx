@@ -4,7 +4,7 @@ import maplibre from 'maplibre-gl';
 import { fromArrayBuffer } from 'geotiff';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Constants (same as before)
+// Constants
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dataFields = {
@@ -34,7 +34,6 @@ const jetColors = [
   [255, 16, 0], [255, 0, 0], [239, 0, 0], [223, 0, 0], [207, 0, 0], [191, 0, 0]
 ];
 
-
 export default function MapComponent() {
   const mapContainerRef = useRef(null);
   const legendRef = useRef(null);
@@ -43,18 +42,17 @@ export default function MapComponent() {
   const [selectedMonth, setSelectedMonth] = useState("Jul");
   const [selectedData, setSelectedData] = useState("PO3");
   const [isLoading, setIsLoading] = useState(false);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   // Initialize map when component mounts
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Initialize map with worker options
     const map = new maplibre.Map({
       container: mapContainerRef.current,
       style: 'https://demotiles.maplibre.org/style.json',
       center: [0, 20],
       zoom: 2,
-      // Add this to help with CSP compliance
       attributionControl: false,
       transformRequest: (url) => {
         if (url.startsWith('http')) {
@@ -64,9 +62,8 @@ export default function MapComponent() {
       }
     });
 
-
     map.on('load', () => {
-      setMapReady(true);
+      setIsMapReady(true);
       mapRef.current = map;
     });
 
@@ -76,11 +73,13 @@ export default function MapComponent() {
         mapRef.current = null;
       }
     };
-
   }, []);
 
   const loadGeoTiff = async () => {
-    if (!mapRef.current || !mapReady) return;
+    if (!mapRef.current || !isMapReady) {
+      console.error("Map not ready or not initialized");
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -132,7 +131,7 @@ export default function MapComponent() {
         canvas.toBlob(resolve, 'image/png');
       });
       const imageUrl = URL.createObjectURL(blob);
-      // Add raster source and layer
+
       // Add raster source and layer
       mapRef.current.addSource('raster-source', {
         type: 'image',
@@ -144,7 +143,6 @@ export default function MapComponent() {
           [minX, minY],
         ]
       });
-
 
       mapRef.current.addLayer({
         id: 'raster-layer',
@@ -158,10 +156,10 @@ export default function MapComponent() {
       mapRef.current.fitBounds([[minX, minY], [maxX, maxY]]);
       updateLegend();
 
-    // Clean up the object URL when done
-    mapRef.current.on('render', () => {
-            URL.revokeObjectURL(imageUrl);
-    });
+      // Clean up the object URL when done
+      mapRef.current.once('render', () => {
+        URL.revokeObjectURL(imageUrl);
+      });
       
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
