@@ -48,14 +48,27 @@ export default function MapComponent() {
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+    // Initialize map with worker options
     const map = new maplibre.Map({
       container: mapContainerRef.current,
       style: 'https://demotiles.maplibre.org/style.json',
       center: [0, 20],
-      zoom: 2
+      zoom: 2,
+      // Add this to help with CSP compliance
+      attributionControl: false,
+      transformRequest: (url) => {
+        if (url.startsWith('http')) {
+          return { url };
+        }
+        return { url: `https://www.ozonerates.space${url}` };
+      }
     });
 
-    mapRef.current = map;
+
+    map.on('load', () => {
+      setMapReady(true);
+      mapRef.current = map;
+    });
 
     return () => {
       if (mapRef.current) {
@@ -63,10 +76,11 @@ export default function MapComponent() {
         mapRef.current = null;
       }
     };
+
   }, []);
 
   const loadGeoTiff = async () => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !mapReady) return;
     setIsLoading(true);
 
     try {

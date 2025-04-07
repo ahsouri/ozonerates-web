@@ -20,10 +20,19 @@ export default defineConfig({
     },
     server: {
       headers: {
-        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://demotiles.maplibre.org https://raw.githubusercontent.com; connect-src 'self' https://demotiles.maplibre.org https://api.web3forms.com https://github.com https://raw.githubusercontent.com blob:;"
-      }
+        "Content-Security-Policy": `
+          default-src 'self';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:;
+          worker-src 'self' blob:;
+          img-src 'self' data: blob: https://*.tiles.mapbox.com https://demotiles.maplibre.org https://raw.githubusercontent.com;
+          connect-src 'self' https://*.tiles.mapbox.com https://demotiles.maplibre.org https://api.web3forms.com https://github.com https://raw.githubusercontent.com blob:;
+          style-src 'self' 'unsafe-inline';
+          font-src 'self';
+        `.replace(/\s+/g, ' '),
     },
   },
+  },
+
   integrations: [
     tailwind(),
     sitemap({

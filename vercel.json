@@ -5,8 +5,8 @@
         "headers": [
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-src 'self'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.web3forms.com https://github.com https://demotiles.maplibre.org https://server.arcgisonline.com https://raw.githubusercontent.com; img-src 'self' data: blob: https://demotiles.maplibre.org https://images.unsplash.com https://server.arcgisonline.com; connect-src 'self'; object-src 'none'; upgrade-insecure-requests; block-all-mixed-content"
-          },
+            "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-src 'self'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.web3forms.com https://github.com https://demotiles.maplibre.org https://server.arcgisonline.com https://raw.githubusercontent.com blob:; img-src 'self' data: blob: https://demotiles.maplibre.org https://images.unsplash.com https://www.ozonerates.space https://server.arcgisonline.com https://*.tiles.mapbox.com; font-src 'self'; object-src 'none'; upgrade-insecure-requests; block-all-mixed-content"
+            },
           {
             "key": "Permissions-Policy",
             "value": "interest-cohort=()"
