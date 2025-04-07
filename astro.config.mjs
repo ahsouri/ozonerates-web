@@ -9,7 +9,7 @@ import react from '@astrojs/react';
 export default defineConfig({
   site: "https://www.ozonerates.space",
   image: {
-    domains: ["images.unsplash.com", "https://server.arcgisonline.com", "https://demotiles.maplibre.org"],
+    domains: ["images.unsplash.com", "https://server.arcgisonline.com", "https://demotiles.maplibre.org", "https://www.ozonerates.space"],
   },
   prefetch: true,
   vite: {
