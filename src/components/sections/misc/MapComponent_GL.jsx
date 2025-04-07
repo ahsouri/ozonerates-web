@@ -4,7 +4,7 @@ import maplibre from 'maplibre-gl';
 import { fromArrayBuffer } from 'geotiff';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Constants (same as before)
+// Constants
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dataFields = {
@@ -34,7 +34,6 @@ const jetColors = [
   [255, 16, 0], [255, 0, 0], [239, 0, 0], [223, 0, 0], [207, 0, 0], [191, 0, 0]
 ];
 
-
 export default function MapComponent() {
   const mapContainerRef = useRef(null);
   const legendRef = useRef(null);
@@ -43,18 +42,17 @@ export default function MapComponent() {
   const [selectedMonth, setSelectedMonth] = useState("Jul");
   const [selectedData, setSelectedData] = useState("PO3");
   const [isLoading, setIsLoading] = useState(false);
-  const [mapReady, setMapReady] = useState(false); // Added missing state
+  const [mapReady, setMapReady] = useState(false);
+
   // Initialize map when component mounts
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Initialize map with worker options
     const map = new maplibre.Map({
       container: mapContainerRef.current,
       style: 'https://demotiles.maplibre.org/style.json',
       center: [0, 20],
       zoom: 2,
-      // Add this to help with CSP compliance
       attributionControl: false,
       transformRequest: (url) => {
         if (url.startsWith('http')) {
@@ -63,7 +61,6 @@ export default function MapComponent() {
         return { url: `https://www.ozonerates.space${url}` };
       }
     });
-
 
     map.on('load', () => {
       setMapReady(true);
@@ -76,7 +73,6 @@ export default function MapComponent() {
         mapRef.current = null;
       }
     };
-
   }, []);
 
   const loadGeoTiff = async () => {
@@ -96,6 +92,8 @@ export default function MapComponent() {
 
       // Fetch and parse GeoTIFF
       const response = await fetch(url);
+      if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
+      
       const arrayBuffer = await response.arrayBuffer();
       const tiff = await fromArrayBuffer(arrayBuffer);
       const image = await tiff.getImage();
@@ -128,13 +126,10 @@ export default function MapComponent() {
       }
 
       ctx.putImageData(imageData, 0, 0);
-      const blob = await new Promise(resolve => {
-        canvas.toBlob(resolve, 'image/png');
-      });
-      // Add raster source and layer
       const imageUrl = await new Promise(resolve => {
-      canvas.toBlob(blob => resolve(URL.createObjectURL(blob)), 'image/png');
+        canvas.toBlob(blob => resolve(URL.createObjectURL(blob)), 'image/png');
       });
+
       // Add raster source and layer
       mapRef.current.addSource('raster-source', {
         type: 'image',
@@ -144,9 +139,8 @@ export default function MapComponent() {
           [maxX, maxY], // top-right
           [maxX, minY], // bottom-right
           [minX, minY], // bottom-left
-          ]
+        ]
       });
-
 
       mapRef.current.addLayer({
         id: 'raster-layer',
@@ -157,19 +151,16 @@ export default function MapComponent() {
         }
       });
 
-      mapRef.current.fitBounds([[minX, minY], [maxX, maxY]]);
+      // Revoke the object URL after the image is loaded
+      mapRef.current.once('idle', () => {
+        URL.revokeObjectURL(imageUrl);
+      });
+
+      mapRef.current.fitBounds([[minX, minY], [maxX, maxY]], { padding: 20 });
       updateLegend();
 
-    // Clean up the object URL when done
-    mapRef.current.on('render', () => {
-            URL.revokeObjectURL(imageUrl);
-    });
-    // Revoke the object URL after the image is loaded
-    mapRef.current.once('idle', () => {
-        URL.revokeObjectURL(imageUrl);
-    });
-    console.log('Image URL:', url);
-    console.log('Bounding box:', [minX, minY, maxX, maxY]);
+      console.log('Image URL:', url);
+      console.log('Bounding box:', [minX, minY, maxX, maxY]);
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
       alert(`Error loading map: ${error.message}`);
@@ -297,5 +288,3 @@ export default function MapComponent() {
     </div>
   );
 }
-
-
