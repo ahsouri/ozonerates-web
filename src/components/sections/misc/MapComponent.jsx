@@ -228,78 +228,97 @@ export default function MapComponent() {
 
   return (
     <div>
-      <div id="map" style={{ height: "700px", width: "100%", marginBottom: "20px" }} />
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <label>Year: </label>
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
-          disabled={isLoading}
-        >
-          {years.map(year => <option key={year} value={year}>{year}</option>)}
-        </select>
-
-        <label style={{ marginLeft: "20px" }}>Month: </label>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
-          disabled={isLoading}
-        >
-          {months.map(month => <option key={month} value={month}>{month}</option>)}
-        </select>
-
-        <label style={{ marginLeft: "20px" }}>Data: </label>
-        <select
-          value={selectedData}
-          onChange={(e) => setSelectedData(e.target.value)}
-          style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
-          disabled={isLoading}
-        >
-          {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
-        </select>
-
-        <button
-          onClick={loadGeoTiff}
-          disabled={isLoading}
-          style={{
-            marginLeft: "20px",
-            padding: "10px 20px",
-            backgroundColor: isLoading ? "#cccccc" : "purple",
-            color: "white",
-            border: "none",
-            borderRadius: "20px",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            transition: "background-color 0.3s"
-          }}
-          onMouseOver={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "#6b46c1")}
-          onMouseOut={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "purple")}
-        >
-          {isLoading ? "Loading..." : "Load The Map"}
-        </button>
-        <button
-          onClick={refreshPage}
-          style={{
-            marginLeft: "20px",
-            padding: "10px 20px",
-            backgroundColor: "red",
-            color: "white",
-            border: "none",
-            borderRadius: "20px",
-            cursor: "pointer",
-            transition: "background-color 0.3s"
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#cc0000")}
-          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "red")}
-        >
-          Refresh
-        </button>
-        <div style={{
+    <div id="map" style={{ height: "700px", width: "100%", marginBottom: "20px" }} />
+    <div style={{ textAlign: "center", marginBottom: "20px" }}>
+      <label>Year: </label>
+      <select
+        value={selectedYear}
+        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+        style={{ 
+          padding: "8px",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          width: "100px", // Added fixed width
+          marginRight: "20px" // Added spacing
+        }}
+        disabled={isLoading}
+      >
+        {years.map(year => <option key={year} value={year}>{year}</option>)}
+      </select>
+  
+      <label>Month: </label>
+      <select
+        value={selectedMonth}
+        onChange={(e) => setSelectedMonth(e.target.value)}
+        style={{ 
+          padding: "8px",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          width: "100px", // Added fixed width
+          marginRight: "20px" // Added spacing
+        }}
+        disabled={isLoading}
+      >
+        {months.map(month => <option key={month} value={month}>{month}</option>)}
+      </select>
+  
+      <label>Data: </label>
+      <select
+        value={selectedData}
+        onChange={(e) => setSelectedData(e.target.value)}
+        style={{ 
+          padding: "8px",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          width: "200px", // Wider for longer text options
+          marginRight: "20px" // Added spacing
+        }}
+        disabled={isLoading}
+      >
+        {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
+      </select>
+  
+      <button
+        onClick={loadGeoTiff}
+        disabled={isLoading}
+        style={{
+          marginLeft: "20px",
+          padding: "10px 20px",
+          backgroundColor: isLoading ? "#cccccc" : "purple",
+          color: "white",
+          border: "none",
+          borderRadius: "20px",
+          cursor: isLoading ? "not-allowed" : "pointer",
+          transition: "background-color 0.3s"
+        }}
+        onMouseOver={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "#6b46c1")}
+        onMouseOut={(e) => !isLoading && (e.currentTarget.style.backgroundColor = "purple")}
+      >
+        {isLoading ? "Loading..." : "Load The Map"}
+      </button>
+      <button
+        onClick={refreshPage}
+        style={{
+          marginLeft: "20px",
+          padding: "10px 20px",
+          backgroundColor: "red",
+          color: "white",
+          border: "none",
+          borderRadius: "20px",
+          cursor: "pointer",
+          transition: "background-color 0.3s"
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#cc0000")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "red")}
+      >
+        Refresh
+      </button>
+      <div style={{
         textAlign: "center",
         marginBottom: "15px",
         color: "black",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        marginTop: "20px" // Added top margin for better spacing
       }}>
         Note: It is highly recommended to press "refresh" when changing the dropdowns and reloading the map.
       </div>
@@ -310,7 +329,7 @@ export default function MapComponent() {
       }}>
         The maps are rendered on your computer so it may take time to see the full resolution depending on your computer performance.
       </div>
-      </div>
     </div>
+  </div>
   );
 }
