@@ -124,6 +124,7 @@ export default function MapComponent() {
         dataType === "JNO2" ? '[1000*1/s]' :
         dataType.includes("PBL") ? '[ppbv]' :
         dataType.includes("PO3") ? '[ppbv/hr]' :
+        dataType.includes("Sens.") ? '[ppbv/hr]' :
         'Unknown'
 
       div.appendChild(gradient);
