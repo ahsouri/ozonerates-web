@@ -302,6 +302,13 @@ export default function MapComponent() {
       }}>
         Note: It is highly recommended to press "refresh" when changing the dropdowns and reloading the map.
       </div>
+      <div style={{
+        textAlign: "center",
+        marginBottom: "10px",
+        color: "black",
+      }}>
+        The maps are rendered on your computer so it may take time to see the full resolution depending on your computer performance.
+      </div>
       </div>
     </div>
   );
