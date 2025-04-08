@@ -122,8 +122,9 @@ export default function MapComponent() {
       unit.style.marginTop = '5px';
       unit.textContent = dataType.includes("VCD") ? '[Pmolec/cm²]' :
         dataType === "JNO2" ? '[1000*1/s]' :
-        dataType === "PBL" ? '[ppbv]' :
-          '[ppbv/hr]';
+        dataType.includes("PBL") ? '[ppbv]' :
+        dataType.includes("PO3") ? '[ppbv/hr]' :
+        'Unknown'
 
       div.appendChild(gradient);
       div.appendChild(labels);
