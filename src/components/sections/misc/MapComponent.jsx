@@ -225,11 +225,17 @@ export default function MapComponent() {
   const refreshPage = () => {
     window.location.reload();
   };
-
   return (
-    <div>
-    <div id="map" style={{ height: "700px", width: "100%", marginBottom: "20px" }} />
-    <div style={{ textAlign: "center", marginBottom: "20px" }}>
+<div>
+  <div style={{ 
+    textAlign: "center", 
+    marginBottom: "20px", 
+    padding: "10px",
+    backgroundColor: "#f5f5f5", // Light gray background for better visibility
+    borderRadius: "8px" // Rounded corners
+  }}>
+    {/* Controls Row */}
+    <div style={{ marginBottom: "15px" }}>
       <label>Year: </label>
       <select
         value={selectedYear}
@@ -238,14 +244,14 @@ export default function MapComponent() {
           padding: "8px",
           borderRadius: "4px",
           border: "1px solid #ccc",
-          width: "100px", // Added fixed width
-          marginRight: "20px" // Added spacing
+          width: "100px",
+          marginRight: "20px"
         }}
         disabled={isLoading}
       >
         {years.map(year => <option key={year} value={year}>{year}</option>)}
       </select>
-  
+
       <label>Month: </label>
       <select
         value={selectedMonth}
@@ -254,14 +260,14 @@ export default function MapComponent() {
           padding: "8px",
           borderRadius: "4px",
           border: "1px solid #ccc",
-          width: "100px", // Added fixed width
-          marginRight: "20px" // Added spacing
+          width: "100px",
+          marginRight: "20px"
         }}
         disabled={isLoading}
       >
         {months.map(month => <option key={month} value={month}>{month}</option>)}
       </select>
-  
+
       <label>Data: </label>
       <select
         value={selectedData}
@@ -270,14 +276,14 @@ export default function MapComponent() {
           padding: "8px",
           borderRadius: "4px",
           border: "1px solid #ccc",
-          width: "200px", // Wider for longer text options
-          marginRight: "20px" // Added spacing
+          width: "200px",
+          marginRight: "20px"
         }}
         disabled={isLoading}
       >
         {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
       </select>
-  
+
       <button
         onClick={loadGeoTiff}
         disabled={isLoading}
@@ -313,23 +319,29 @@ export default function MapComponent() {
       >
         Refresh
       </button>
-      <div style={{
-        textAlign: "center",
-        marginBottom: "15px",
-        color: "black",
-        fontWeight: "bold",
-        marginTop: "20px" // Added top margin for better spacing
-      }}>
-        Note: It is highly recommended to press "refresh" when changing the dropdowns and reloading the map.
-      </div>
-      <div style={{
-        textAlign: "center",
-        marginBottom: "10px",
-        color: "black",
-      }}>
-        The maps are rendered on your computer so it may take time to see the full resolution depending on your computer performance.
-      </div>
+    </div>
+
+    {/* Notes Section */}
+    <div style={{
+      textAlign: "center",
+      marginBottom: "10px",
+      color: "black",
+      fontWeight: "bold",
+      fontSize: "14px"
+    }}>
+      Note: It is highly recommended to press "refresh" when changing the dropdowns and reloading the map.
+    </div>
+    <div style={{
+      textAlign: "center",
+      color: "black",
+      fontSize: "14px"
+    }}>
+      The maps are rendered on your computer so it may take time to see the full resolution depending on your computer performance.
     </div>
   </div>
+
+  {/* Map Section */}
+  <div id="map" style={{ height: "700px", width: "100%", marginBottom: "20px" }} />
+</div>
   );
 }
