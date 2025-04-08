@@ -8,6 +8,27 @@ import MapComponent from "@/components/sections/misc/MapComponent";
 ---
 
 <!--Utilizing MainLayout for the outer layout of the page, and defining meta for SEO purposes-->
-
+<MainLayout
+  title={pageTitle}
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://www.ozonerates.space/maps",
+    "url": "https://www.ozonerates.space/maps",
+    "name": "Maps",
+    "isPartOf": {
+      "@type": "WebSite",
+      "url": "https://www.ozonerates.space",
+      "name": "Ozonerates",
+     },
+    "inLanguage": "en-US"
+  }}
+>
+<div class={twMerge("bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-6 rounded-2xl shadow-lg text-center max-w-3xl mx-auto my-10")}>
+  <h2 class="text-lg font-bold mb-2">Explore Bias-Corrected TROPOMI-Based Products</h2>
+  <p class="text-m">
+    Discover high-resolution datasets, including PO3, ozone sensitivity maps, photolysis rates, and the abundance of HCHO and NO₂, spanning from 2018 to 2023 at ~10x10 km2.
+  </p>
+</div>
 <MapComponent client:load />
-
+</MainLayout>

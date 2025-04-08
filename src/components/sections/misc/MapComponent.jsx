@@ -131,35 +131,41 @@ export default function MapComponent() {
     setIsLoading(true);
     
     try {
+      console.log("1")
       const L = (await import("leaflet")).default;
+      console.log("2")
        // Dynamically import georaster libraries with proper syntax
       const georasterModule = await import("georaster");
+      console.log("3")
       const georasterLayerModule = await import("georaster-layer-for-leaflet");
-       
+      console.log("4")
       // Access the default exports correctly
       const parseGeoraster = georasterModule.default;
+      console.log("5")
       const GeoRasterLayer = georasterLayerModule.default;
-   
+      console.log("6")   
 
       const monthNum = monthToNumber[selectedMonth];
       const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
       const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
-
+      console.log("7")
       // Fetch and parse the GeoTIFF
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Failed to fetch GeoTIFF: ${response.statusText}`);
-      
+      console.log("8")
       const arrayBuffer = await response.arrayBuffer();
+      console.log("9")
       const georaster = await parseGeoraster(arrayBuffer);
-
+      console.log("10")
       console.log("georasterModule:", georasterModule);
       console.log("georasterLayerModule:", georasterLayerModule);
+      console.log("11")
       // Remove existing layer if present
       if (rasterLayer) {
         map.removeLayer(rasterLayer);
         setRasterLayer(null);
       }
-
+      console.log("12")
       // Create new raster layer with proper color mapping
       const layer = new GeoRasterLayer({
         georaster: georaster,
@@ -187,20 +193,20 @@ export default function MapComponent() {
             : `rgb(${r},${g},${b})`;
         }
       });
-
+      console.log("13")
       // Add layer to map
       layer.addTo(map);
       setRasterLayer(layer);
-
+      console.log("14")
       // Update legend
       if (legend) map.removeControl(legend);
       const newLegend = createLegend(L, selectedData);
       newLegend.addTo(map);
       setLegend(newLegend);
-
+      console.log("15")
       // Fit bounds to the raster extent
       map.fitBounds(layer.getBounds());
-
+      console.log("6")
     } catch (error) {
       console.error("Error loading GeoTIFF:", error);
       alert(`Error loading map: ${error.message}`);
