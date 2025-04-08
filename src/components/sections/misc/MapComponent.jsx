@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import('leaflet/dist/leaflet.css');
+
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const dataFields = {
@@ -39,6 +40,7 @@ export default function MapComponent() {
   const [legend, setLegend] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [rasterGroup, setRasterGroup] = useState(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -49,7 +51,13 @@ export default function MapComponent() {
 
     const initMap = async () => {
       const L = (await import("leaflet")).default;
-      
+
+      // Clear existing map if it exists
+      if (map) {
+        map.remove();
+        setMap(null);
+      }
+
       const leafletMap = L.map("map", {
         minZoom: 2,
         maxZoom: 18,
@@ -63,9 +71,9 @@ export default function MapComponent() {
         attribution: '© OpenStreetMap contributors'
       }).addTo(leafletMap);
 
-      const newLegend = createLegend(L, selectedData);
-      newLegend.addTo(leafletMap);
-      setLegend(newLegend);
+      const rasterLayerGroup = L.layerGroup().addTo(leafletMap);
+      setRasterGroup(rasterLayerGroup);
+      
       setMap(leafletMap);
     };
 
@@ -112,9 +120,10 @@ export default function MapComponent() {
       unit.style.textAlign = 'center';
       unit.style.fontWeight = 'bold';
       unit.style.marginTop = '5px';
-      unit.textContent = dataType.includes("VCD") ? '[Pmolec/cm²]' : 
-                       dataType === "JNO2" ? '[1000*1/s]' : 
-                       '[ppbv/hr]';
+      unit.textContent = dataType.includes("VCD") ? '[Pmolec/cm²]' :
+        dataType === "JNO2" ? '[1000*1/s]' :
+        dataType === "PBL" ? '[ppbv]' :
+          '[ppbv/hr]';
 
       div.appendChild(gradient);
       div.appendChild(labels);
@@ -126,104 +135,84 @@ export default function MapComponent() {
   };
 
   const loadGeoTiff = async () => {
-    if (!map) return;
-    
-    setIsLoading(true);
-    
-    try {
-      console.log("1")
-      const L = (await import("leaflet")).default;
-      console.log("2")
-       // Dynamically import georaster libraries with proper syntax
-      const georasterModule = await import("georaster");
-      console.log("3")
-      const georasterLayerModule = await import("georaster-layer-for-leaflet");
-      console.log("4")
-      // Access the default exports correctly
-      const parseGeoraster = georasterModule.default;
-      console.log("5")
-      const GeoRasterLayer = georasterLayerModule.default;
-      console.log("6")   
-
-      const monthNum = monthToNumber[selectedMonth];
-      const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
-      const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
-      console.log("7")
-      // Fetch and parse the GeoTIFF
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Failed to fetch GeoTIFF: ${response.statusText}`);
-      console.log("8")
-      const arrayBuffer = await response.arrayBuffer();
-      console.log("9")
-      const georaster = await parseGeoraster(arrayBuffer);
-      console.log("10")
-      console.log("georasterModule:", georasterModule);
-      console.log("georasterLayerModule:", georasterLayerModule);
-      console.log("11")
-      // Remove existing layer if present
-      if (rasterLayer) {
-        map.removeLayer(rasterLayer);
-        setRasterLayer(null);
-      }
-      console.log("12")
-      // Create new raster layer with proper color mapping
-      const layer = new GeoRasterLayer({
-        georaster: georaster,
-        opacity: 0.7,
-        resolution: 256,
-        pixelValuesToColorFn: values => {
-          if (!values || values.length === 0) return 'rgba(0, 0, 0, 0)';
-          
-          // For single-band rasters
-          if (values.length === 1) {
-            const value = values[0];
-            if (value === 0 || value === -9999) return 'rgba(0, 0, 0, 0)';
-            
-            // Normalize value to jetColors index
-            const normalized = Math.min(Math.max(value, 0), 255);
-            const index = Math.floor((normalized / 255) * (jetColors.length - 1));
-            const [r, g, b] = jetColors[index];
-            return `rgb(${r},${g},${b})`;
+      if (!map || !rasterGroup) return;
+      setIsLoading(true);
+  
+      try {
+          const L = (await import("leaflet")).default;
+          const georasterModule = await import("georaster");
+          const georasterLayerModule = await import("georaster-layer-for-leaflet");
+          const parseGeoraster = georasterModule.default;
+          const GeoRasterLayer = georasterLayerModule.default;
+  
+          const monthNum = monthToNumber[selectedMonth];
+          const fileName = `TROPOMI_${dataFields[selectedData]}_${selectedYear}_${monthNum}.tif`;
+          const url = `https://raw.githubusercontent.com/ahsouri/ozonerates-geotifs/main/images/${fileName}`;
+  
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`Failed to fetch GeoTIFF: ${response.statusText}`);
+          const arrayBuffer = await response.arrayBuffer();
+          const georaster = await parseGeoraster(arrayBuffer);
+  
+          // Clear previous raster layers and legend
+          rasterGroup.clearLayers();
+          setRasterLayer(null);
+          if (legend) {
+              map.removeControl(legend);
+              setLegend(null);
           }
-          
-          // For RGB rasters
-          const [r, g, b] = values;
-          return (b < 132 && r === 0 && g === 0) 
-            ? 'rgba(0, 0, 0, 0)' 
-            : `rgb(${r},${g},${b})`;
-        }
-      });
-      console.log("13")
-      // Add layer to map
-      layer.addTo(map);
-      setRasterLayer(layer);
-      console.log("14")
-      // Update legend
-      if (legend) map.removeControl(legend);
-      const newLegend = createLegend(L, selectedData);
-      newLegend.addTo(map);
-      setLegend(newLegend);
-      console.log("15")
-      // Fit bounds to the raster extent
-      map.fitBounds(layer.getBounds());
-      console.log("6")
-    } catch (error) {
-      console.error("Error loading GeoTIFF:", error);
-      alert(`Error loading map: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
+  
+          // Create new raster layer
+          const layer = new GeoRasterLayer({
+              georaster,
+              opacity: 0.7,
+              resolution: 256,
+              pixelValuesToColorFn: values => {
+                  if (!values || values.length === 0) return 'rgba(0, 0, 0, 0)';
+                  if (values.length === 1) {
+                      const value = values[0];
+                      if (value === 0 || value === -9999) return 'rgba(0, 0, 0, 0)';
+                      const normalized = Math.min(Math.max(value, 0), 255);
+                      const index = Math.floor((normalized / 255) * (jetColors.length - 1));
+                      const [r, g, b] = jetColors[index];
+                      return `rgb(${r},${g},${b})`;
+                  }
+                  const [r, g, b] = values;
+                  return (b < 132 && r === 0 && g === 0)
+                      ? 'rgba(0, 0, 0, 0)'
+                      : `rgb(${r},${g},${b})`;
+              }
+          });
+  
+          layer.addTo(rasterGroup);
+          setRasterLayer(layer);
+          map.fitBounds(layer.getBounds());
+  
+          // Create and add new legend
+          const newLegend = createLegend(L, selectedData);
+          newLegend.addTo(map);
+          setLegend(newLegend);
+  
+          // Refresh map view
+          map.invalidateSize();
+      } catch (error) {
+          console.error("Error loading GeoTIFF:", error);
+          alert(`Error loading map: ${error.message}`);
+      } finally {
+          setIsLoading(false);
+      }
   };
+  
 
   if (!isClient) {
     return (
       <div style={{
-        height: "700px", 
+        height: "700px",
         width: "100%",
-        backgroundColor: "#000", 
+        backgroundColor: "#000",
         color: "white",
-        display: "flex", 
-        justifyContent: "center", 
+        display: "flex",
+        justifyContent: "center",
         alignItems: "center"
       }}>
         Loading map...
@@ -231,13 +220,17 @@ export default function MapComponent() {
     );
   }
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   return (
     <div>
       <div id="map" style={{ height: "700px", width: "100%", marginBottom: "20px" }} />
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <label>Year: </label>
-        <select 
-          value={selectedYear} 
+        <select
+          value={selectedYear}
           onChange={(e) => setSelectedYear(parseInt(e.target.value))}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
           disabled={isLoading}
@@ -246,8 +239,8 @@ export default function MapComponent() {
         </select>
 
         <label style={{ marginLeft: "20px" }}>Month: </label>
-        <select 
-          value={selectedMonth} 
+        <select
+          value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
           disabled={isLoading}
@@ -256,8 +249,8 @@ export default function MapComponent() {
         </select>
 
         <label style={{ marginLeft: "20px" }}>Data: </label>
-        <select 
-          value={selectedData} 
+        <select
+          value={selectedData}
           onChange={(e) => setSelectedData(e.target.value)}
           style={{ padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
           disabled={isLoading}
@@ -265,8 +258,8 @@ export default function MapComponent() {
           {Object.keys(dataFields).map(d => <option key={d} value={d}>{d}</option>)}
         </select>
 
-        <button 
-          onClick={loadGeoTiff} 
+        <button
+          onClick={loadGeoTiff}
           disabled={isLoading}
           style={{
             marginLeft: "20px",
@@ -283,6 +276,31 @@ export default function MapComponent() {
         >
           {isLoading ? "Loading..." : "Load The Map"}
         </button>
+        <button
+          onClick={refreshPage}
+          style={{
+            marginLeft: "20px",
+            padding: "10px 20px",
+            backgroundColor: "red",
+            color: "white",
+            border: "none",
+            borderRadius: "20px",
+            cursor: "pointer",
+            transition: "background-color 0.3s"
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#cc0000")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "red")}
+        >
+          Refresh
+        </button>
+        <div style={{
+        textAlign: "center",
+        marginBottom: "15px",
+        color: "black",
+        fontWeight: "bold"
+      }}>
+        Note: It is highly recommended to press "refresh" when changing the dropdowns and reloading the map.
+      </div>
       </div>
     </div>
   );
