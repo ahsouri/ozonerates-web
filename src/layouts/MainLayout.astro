@@ -6,7 +6,13 @@ import FooterSection from "@components/sections/navbar&footer/FooterSection.astr
 import { SITE } from "@data/constants";
 
 // Setting expected props
-const { title = SITE.title, meta, structuredData, lang = "en" } = Astro.props;
+const { 
+  title = SITE.title, 
+  meta, 
+  structuredData, 
+  lang = "en",
+  showFooter = true // Default to true if not specified
+} = Astro.props;
 
 // Interface to type-check the properties
 interface Props {
@@ -14,6 +20,7 @@ interface Props {
   meta?: string;
   structuredData?: object;
   lang?: string;
+  showFooter?: boolean;
 }
 ---
 
@@ -56,7 +63,7 @@ We set the language of the page to English and add classes for scrollbar and scr
         <slot />
       </main>
     </div>
-    <FooterSection />
+    {showFooter && <FooterSection />}
     <style>
       /* CSS rules for the page scrollbar */
       .scrollbar-hide::-webkit-scrollbar {

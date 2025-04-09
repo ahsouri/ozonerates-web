@@ -21,8 +21,8 @@ import MapComponent from "@/components/sections/misc/MapComponent";
       "url": "https://www.ozonerates.space",
       "name": "Ozonerates",
      },
-    "inLanguage": "en-US"
-  }}
+    "inLanguage": "en-US"}}
+  showFooter={false}
 >
 <div class={twMerge("bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-6 rounded-2xl shadow-lg text-center max-w-3xl mx-auto my-10")}>
   <h2 class="text-lg font-bold mb-2">Explore Bias-Corrected TROPOMI-Based Products</h2>
@@ -31,4 +31,13 @@ import MapComponent from "@/components/sections/misc/MapComponent";
   </p>
 </div>
 <MapComponent client:load />
+<div class="my-8"></div>
+
+<style>
+  .spacer {
+    height: 2rem; /* Adjust as needed */
+  }
+</style>
+
+<div class="spacer"></div> <!-- Blank space -->
 </MainLayout>
