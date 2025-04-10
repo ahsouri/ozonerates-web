@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from "react";
 import('leaflet/dist/leaflet.css');
+// Add these at the top of your file
+import * as topojson from 'topojson-client';
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -30,6 +32,71 @@ const jetColors = [
   [255, 112, 0], [255, 96, 0], [255, 80, 0], [255, 64, 0], [255, 48, 0], [255, 32, 0],
   [255, 16, 0], [255, 0, 0], [239, 0, 0], [223, 0, 0], [207, 0, 0], [191, 0, 0]
 ];
+
+// Helper function to load and add Natural Earth boundaries
+// Boundary loader function
+async function loadBoundaries(map, L) {
+  // Define styles
+  const styles = {
+    coastline: { color: "#000000", weight: 1.0, opacity: 0.9, fill: false  },
+    country: { color: "#000000", weight: 1.0, opacity: 0.9, fill: false },
+    state: { color: "#000000", weight: 1.0, opacity: 0.9, fill: false  },
+    county: { color: "#000000", weight: 1.0, opacity: 0.9, fill: false }
+  };
+
+  try {
+    // Create layer groups
+    const layers = {
+      coastlines: L.layerGroup(),
+      countries: L.layerGroup(),
+      usStates: L.layerGroup(),
+      usCounties: L.layerGroup()
+    };
+
+    // Load global boundaries (Natural Earth)
+    const [coastlineRes, countryRes, usStatesRes, usCountiesRes] = await Promise.all([
+      fetch("https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_coastline.geojson"),
+      fetch("https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson"),
+      fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json"),
+      fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json")
+    ]);
+
+    // Convert responses to JSON
+    const [coastlines, countries, usStatesTopo, usCountiesTopo] = await Promise.all([
+      coastlineRes.json(),
+      countryRes.json(),
+      usStatesRes.json(),
+      usCountiesRes.json()
+    ]);
+
+    // Convert TopoJSON to GeoJSON (for US data)
+    const usStates = topojson.feature(usStatesTopo, usStatesTopo.objects.states);
+    const usCounties = topojson.feature(usCountiesTopo, usCountiesTopo.objects.counties);
+
+    // Add layers to map
+    L.geoJson(coastlines, { style: styles.coastline }).addTo(layers.coastlines);
+    L.geoJson(countries, { style: styles.country }).addTo(layers.countries);
+    L.geoJson(usStates, { style: styles.state }).addTo(layers.usStates);
+    L.geoJson(usCounties, { style: styles.county }).addTo(layers.usCounties);
+
+    // Add layer control
+    L.control.layers(null, {
+      "Coastlines": layers.coastlines,
+      "Country Borders": layers.countries,
+      "US States": layers.usStates,
+      "US Counties": layers.usCounties
+    }, { collapsed: false }).addTo(map);
+
+    // Default visible layers
+    layers.coastlines.addTo(map);
+    layers.countries.addTo(map);
+
+    return layers;
+  } catch (error) {
+    console.error("Error loading boundaries:", error);
+    return null;
+  }
+}
 
 export default function MapComponent() {
   const [selectedYear, setSelectedYear] = useState(2019);
@@ -75,9 +142,13 @@ export default function MapComponent() {
       setRasterGroup(rasterLayerGroup);
       
       setMap(leafletMap);
+      // Load Natural Earth boundaries
+      loadBoundaries(leafletMap, L);
     };
 
+
     initMap();
+
 
     return () => {
       if (map) {
