@@ -20,7 +20,7 @@ tabs:
 longDescription:
   title: "A global product meets longevity over 15-years"
   subTitle: |
-    Discover our product, designed for long-term research with global coverage. Using bias-corrected OMI HCHO and NO2 retrievals along with other geophysical variables, this product generates PO₃ estimates and sensitivity maps at a spatial resolution of 0.25x0.25 degrees, spanning the period from 2005 to 2019. Perfect for long-term analysis, it provides reasonable, comprehensive data for tracking locally produced trends and environmental impacts over nearly two decades. Ideal for researchers seeking to understand air quality dynamics over time.
+    Suitable for long-term research with global coverage. Using bias-corrected OMI HCHO and NO2 retrievals along with other geophysical variables, this product generates PO₃ estimates and sensitivity maps at a spatial resolution of 0.25x0.25 degrees, spanning the period from 2005 to 2019. Perfect for long-term analysis, it provides reasonable, comprehensive data for tracking locally produced trends and environmental impacts over nearly two decades. Ideal for researchers seeking to understand air quality dynamics over time.
   btnTitle: "Download the data"
   btnURL: "https://doi.org/10.7910/DVN/6QOCNF"
 descriptionList:

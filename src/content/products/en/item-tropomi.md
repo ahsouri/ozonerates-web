@@ -20,7 +20,7 @@ tabs:
 longDescription:
   title: "A global product meets a fine resolution"
   subTitle: |
-    Introducing our advanced air quality product, leveraging bias-corrected TROPOMI HCHO and NO2 retrievals to deliver reasonable global daily PO₃ estimates. This product offers high spatial resolution at 0.1x0.1 degrees, covering the period from 2018 to 2023, along with corresponding sensitivity maps. Ideal for researchers and environmental scientists, it provides reasonable accuracy and global coverage for tracking locally-prodcued ozone pollution and understanding its impacts.
+    We leveraged bias-corrected TROPOMI HCHO and NO2 retrievals to deliver reasonable global daily PO₃ estimates. This product offers high spatial resolution at 0.1x0.1 degrees, covering the period from 2018 to 2023, along with corresponding sensitivity maps. It provides reasonable accuracy and global coverage for tracking locally-prodcued ozone pollution and understanding its drivers.
   btnTitle: "Download the data"
   btnURL: "https://doi.org/10.7910/DVN/LTY8JT"
 descriptionList:

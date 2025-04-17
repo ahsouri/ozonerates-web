@@ -2,20 +2,24 @@
   "subTitle": "Ask us anything about our products, and get factual responses.",
   "faqs": [
     {
+      "question": "What is the exact definition of PO3?",
+      "answer": "It is the sum of sources of ozone molecules minus the sinks. In other words, it is the net ozone production rates known as tendency in atmospheric models."
+    },
+    {
       "question": "Why are there gaps in the daily PO3 maps?",
       "answer": "We stricly follow the recommended quality flags that come with TROPOMI/OMI retrievals to ensure that uncertain pixels such as those affected by smoke, clouds, or snow will not be used in your analysis."
     },
     {
       "question": "Should I be concerned about exposure to unhealthy ozone levels if I notice an increase in PO3 in a specific area?",
-      "answer": "Not necessarily, PO3 describes the amount of ozone molecules photochemically produced. To translate these rates to ozone concentrations, many other processes should be accounted for; in particular, we need to factor in the background ozone levels; this means a moderate PO3 rates over a high-altitude region experiencing a higher ozone background can be enough to push ozone levels to an unhealthy zone."
+      "answer": "Not necessarily, PO3 describes the rate of ozone molecules photochemically produced. To translate these rates to ozone concentrations, many other processes should be accounted for; in particular, we need to factor in the background ozone levels; this means a moderate PO3 rates over a high-altitude region experiencing a higher ozone background may push ozone levels to an unhealthy zone."
     },
     {
       "question": "Then, what benefits can I gain from using this product?",
-      "answer": "You can identify how local concentrations of NOx and VOCs influence ozone production. Additionally, our sensitivity maps provide detailed insights into the complex relationship between PO3 and its precursors (primarily VOCs and NOx), offering far more comprehensive data than the commonly used HCHO/NO2 ratio indicator."
+      "answer": "You can identify how local concentrations of NOx and VOCs influence ozone production. Additionally, our sensitivity maps provide detailed insights into the complex relationship between PO3 and its precursors (primarily VOCs and NOx), offering far more comprehensive data than the commonly used HCHO/NO2 ratio."
     },
     {
       "question": "Does the product tell me exactly which sectors (cars, trees, industry, ..) are resposible for elevated PO3?",
-      "answer": "No, this product can only provide insights into the crude sensitivity of PO3 to HCHO (a proxy for VOCR) and NO2 (a proxy for NOx). Determining the contribution of different sources to VOCs and NOx require a separate product such as models or source-apportionment analysis using super-sites."
+      "answer": "No, this product can only provide insights into the crude sensitivity of PO3 to HCHO (a proxy for VOCR) and NO2 (a proxy for NOx). Determining the contribution of different sources to VOCs and NOx requires an alternative approach such as models or source-apportionment analysis using super-sites."
     },
     {
       "question": "I don't believe in satellite retreivals, how sure are you that the numbers you get are accurate?",
@@ -23,7 +27,11 @@
     },
     {
       "question": "What advantages can I gain from analyzing the long-term trends of your product compared to surface ozone levels?",
-      "answer": "Ozone concentration is influenced by numerous physiochemical processes, including transport, dry deposition, and chemical reactions, making it difficult to attribute surface ozone trends to any single factor without the use of models. Our product specifically targets one key aspect of near-surface ozone formation by isolating the impact of local VOCs and NOx on PO3. This makes it easier to connect the analysis of our product to local regulatory measures."
+      "answer": "Ozone concentration is influenced by numerous physiochemical processes, including transport, dry deposition, and chemical reactions, making it difficult to attribute surface ozone trends to any single factor without the use of models. Our product specifically targets one key aspect of near-surface ozone formation by isolating the impact of local VOCs and NOx concentrations on PO3. This makes it easier to connect the analysis of our product to local regulatory measures."
+    },
+    {
+      "question": "Do you really mean we can determine the impact of local sources on locally-produced ozone using this product?",
+      "answer": "No, we can only provide the first-order response of locally-produced ozone molecules to local concentrations of HCHO and NO2. The local concentrations of HCHO and NO2 can be impacted by both internal and external sources."
     },
     {
       "question": "What are the terms of use? are we expected to pay?",

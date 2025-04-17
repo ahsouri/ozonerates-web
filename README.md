@@ -1,1 +1,1 @@
-A skeleton for upcoming ozonerates package
+[Ozonerates website] (https://www.ozonerates.space)
