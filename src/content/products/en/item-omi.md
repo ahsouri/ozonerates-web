@@ -50,9 +50,7 @@ specificationsRight:
 documentation:
   title: "Please cite the following papers if you use our product in your research:"
   subTitle: |
-    1) Souri et al. (2025), Beyond HCHO/NO2: Ozonerates v1.0 Harnesses Satellite Data and Deep Learning 
-    to Provide Global Daily Net Ozone Production Rates and Sensitivity Maps Within  
-    Planetary Boundary Layer at ~1330 Local Standard Time (2005-2023). Submitted to ACPD.
+    1) souri, A. H., González Abad, G., Duncan, B. N., and Oman, L. D.: Beyond HCHO/NO₂: Global Daily Maps of Net Ozone Production Rates and Sensitivities Constrained by Satellite Observations (2005–2023), EGUsphere [preprint], https://doi.org/10.5194/egusphere-2025-1679, 2025. 
 
     2) Souri, A. H., González Abad, G., Wolfe, G. M., Verhoelst, T., Vigouroux, C.,  
     Pinardi, G., Compernolle, S., Langerock, B., Duncan, B. N., and Johnson, M. S.:  
@@ -60,7 +58,7 @@ documentation:
     observations, ground-based remote sensing, and models, Atmos. Chem. Phys., 25,  
     2061–2086, (https://doi.org/10.5194/acp-25-2061-2025), 2025.
   btnTitle: "Download the user guide"
-  btnURL: "#"
+  btnURL: "https://drive.google.com/file/d/1IygxyoIEAs6UzmLpybu_OMP4iW__wxX_/view?usp=sharing"
 blueprints:
   first: "@/images/blueprint-1.avif"
   second: "@/images/blueprint-2.avif"  
