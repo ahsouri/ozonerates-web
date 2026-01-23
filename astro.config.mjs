@@ -94,9 +94,6 @@ export default defineConfig({
         },
       ],
     }),
-    sitemap({
-      filter: (page) => typeof page === "string",
-    }),
     compressor({
       gzip: false,
       brotli: true,
