@@ -25,11 +25,14 @@ longDescription:
   btnURL: "https://doi.org/10.7910/DVN/6QOCNF"
 descriptionList:
   - title: "Bias-corrected OMI data"
-    subTitle: "We have corrected TROPOMI VCD biases based on studies of Pinardi et al. (2021) and Ayazpour et al. (2025)."
+    subTitle: |
+      We have corrected TROPOMI VCD biases based on studies of Pinardi et al. (2021) and Ayazpour et al. (2025).
   - title: "High temporal coverage"
-    subTitle: "All aspects of the product are produced 2005-2019, suitable for anomaly detection and long-term trend analysis."
+    subTitle: |
+      All aspects of the product are produced 2005-2019, suitable for anomaly detection and long-term trend analysis.
   - title: "Valuable byproducts"
-    subTitle: "In addition to PO₃ estimates, we have offered you sensitivity maps of PO₃ to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of OMI and a state-of-the-art NASA's model"
+    subTitle: |
+      In addition to PO₃ estimates, we have offered you sensitivity maps of PO₃ to HCHO and NO2, and HCHO and NO2 mixing ratios near-the-surface derived from a synergy of OMI and a state-of-the-art NASA's model
 specificationsLeft:
   - title: "Spatial Resolution"
     subTitle: "0.25x0.25 degrees (~ 25x25 km2)"
@@ -41,12 +44,15 @@ specificationsLeft:
     subTitle: "2005-2019"
 specificationsRight:
   - title: "Algorithm"
-    subTitle: "A synergy of OMI, MINDS, aircraft, and ground-based remote sensing data is used in a fine-tuned 
-     deep neural network algorithm"
+    subTitle: |
+      A synergy of OMI, MINDS, aircraft, and ground-based remote sensing data is used in a fine-tuned 
+      deep neural network algorithm
   - title: "Key variables"
-    subTitle: "PO3 (ozone production rates estimates within PBL), PO3_error (absolute error budget), PO3_NO2 (the sensivitity of PO3 to NO2, a proxy for reactive nitrogen), PO3_HCHO (the sensitivity of PO3 to HCHO, a proxy for VOC reactivity)"
+    subTitle: |
+      PO3 (ozone production rates estimates within PBL), PO3_error (absolute error budget), PO3_NO2 (the sensivitity of PO3 to NO2, a proxy for reactive nitrogen), PO3_HCHO (the sensitivity of PO3 to HCHO, a proxy for VOC reactivity)
   - title: "Error quantification"
-    subTitle: "We have included the DNN estimate error, the column to the surface conversion error, and OMI unresolved and random errors into the equation to build confidence in our product."
+    subTitle: |
+      We have included the DNN estimate error, the column to the surface conversion error, and OMI unresolved and random errors into the equation to build confidence in our product.
 documentation:
   title: "Please cite the following papers if you use our product in your research:"
   subTitle: |
