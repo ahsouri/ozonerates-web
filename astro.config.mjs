@@ -95,10 +95,7 @@ export default defineConfig({
       ],
     }),
     sitemap({
-      i18n: {
-      defaultLocale: "en",
-      locales: { en: "en" },
-      },
+      filter: (page) => typeof page === "string",
     }),
     compressor({
       gzip: false,
