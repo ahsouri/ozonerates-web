@@ -35,14 +35,6 @@ export default defineConfig({
 
   integrations: [
     tailwind(),
-    sitemap({
-      i18n: {
-        defaultLocale: "en",
-        locales: {
-          en: "en",
-        },
-      },
-    }),
     react(),
     starlight({
       title: "Ozonerates",
@@ -117,6 +109,7 @@ export default defineConfig({
         },
       ],
     }),
+    sitemap(),
     compressor({
       gzip: false,
       brotli: true,
