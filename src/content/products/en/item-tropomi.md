@@ -50,8 +50,8 @@ specificationsRight:
 documentation:
   title: "Please cite the following papers if you use our product in your research:"
   subTitle: | 
-  1) Souri, A. H., González Abad, G., Duncan, B. N., and Oman, L. D.: Beyond binary maps from HCHO∕NO2: a deep neural network approach to global daily mapping of net ozone production rates and sensitivities constrained by satellite observations (2005–2023), Atmos. Chem. Phys., 26, 809–837, https://doi.org/10.5194/acp-26-809-2026, 2026. 
-  2) Souri, A. H., González Abad, G., Wolfe, G. M., Verhoelst, T., Vigouroux, C., Pinardi, G., Compernolle, S., Langerock, B., Duncan, B. N., and Johnson, M. S.: Feasibility of robust estimates of ozone production rates using a synergy of satellite observations, ground-based remote sensing, and models, Atmos. Chem. Phys., 25, 2061–2086, https://doi.org/10.5194/acp-25-2061-2025, 2025. 
+    1) Souri, A. H., González Abad, G., Duncan, B. N., and Oman, L. D.: Beyond binary maps from HCHO∕NO2: a deep neural network approach to global daily mapping of net ozone production rates and sensitivities constrained by satellite observations (2005–2023), Atmos. Chem. Phys., 26, 809–837, https://doi.org/10.5194/acp-26-809-2026, 2026. 
+    2) Souri, A. H., González Abad, G., Wolfe, G. M., Verhoelst, T., Vigouroux, C., Pinardi, G., Compernolle, S., Langerock, B., Duncan, B. N., and Johnson, M. S.: Feasibility of robust estimates of ozone production rates using a synergy of satellite observations, ground-based remote sensing, and models, Atmos. Chem. Phys., 25, 2061–2086, https://doi.org/10.5194/acp-25-2061-2025, 2025. 
   btnTitle: "Download the user guide"
   btnURL: "https://drive.google.com/file/d/1IygxyoIEAs6UzmLpybu_OMP4iW__wxX_/view?usp=sharing"
 blueprints:
