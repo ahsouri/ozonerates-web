@@ -66,9 +66,13 @@ export default defineConfig({
           autogenerate: { directory: "advanced" },
         },
       ],
-      social: {
-        github: "https://github.com/",
-      },
+      social: [
+        {
+            icon: 'github', // or another supported icon
+            label: 'GitHub', // Descriptive label for the link
+            href: 'https://github.com/',
+        },
+      ],
       disable404Route: true,
       customCss: ["./src/assets/styles/starlight.css"],
       favicon: "/favicon.ico",
